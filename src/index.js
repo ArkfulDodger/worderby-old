@@ -39,6 +39,8 @@ const playerInput = document.getElementById('player-input');
 
 const frankenword = document.getElementById('frankenword');
 
+const resetButton = document.getElementById('reset-button');
+
 //#endregion
 
 
@@ -104,6 +106,9 @@ function cycleTitle() {
 function addEventListeners() {
     // Add event listener for player answer submit
     playerForm.addEventListener('submit', submitAnswer)
+
+    // Add event listener for game reset
+    resetButton.addEventListener('click', resetGame)
 }
 
 // callback for when player submits an answer
@@ -175,6 +180,9 @@ function getWord(word) {
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-
+function resetGame() {
+    // find random prompt word
+    console.log('reset game');
+}
 
 //#endregion
