@@ -8,6 +8,10 @@ const title1 = document.getElementById('title-1');
 const title2 = document.getElementById('title-2');
 const title3 = document.getElementById('title-3');
 
+const playerForm = document.getElementById('player-form')
+const playerPrompt = document.getElementById('player-prompt');
+const playerInput = document.getElementById('player-input');
+
 //#endregion
 
 
