@@ -4,7 +4,9 @@
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-
+const title1 = document.getElementById('title-1');
+const title2 = document.getElementById('title-2');
+const title3 = document.getElementById('title-3');
 
 //#endregion
 
@@ -17,7 +19,7 @@
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-
+startTitleAnimation();
 
 //#endregion
 
@@ -28,7 +30,41 @@
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
+function startTitleAnimation() {
+    setInterval(cycleTitle, 1500);
+}
 
+function cycleTitle() {
+    switch (title2.textContent) {
+        case 'word':
+            title1.textContent = 'w';
+            title2.textContent = 'order';
+            title3.textContent = 'bytes';
+            break;
+        case 'order':
+            title1.textContent = 'wor';
+            title2.textContent = 'derby';
+            title3.textContent = 'tes';
+            break;
+        case 'derby':
+            title1.textContent = 'worder';
+            title2.textContent = 'bytes';
+            title3.textContent = '';
+            break;
+        case 'bytes':
+            title1.textContent = '';
+            title2.textContent = 'word';
+            title3.textContent = 'erbytes';
+            break;
+        
+        default:
+            console.error('title text cycle broken')
+            title1.textContent = '';
+            title2.textContent = 'word';
+            title3.textContent = 'erbytes';
+            break;
+    }
+}
 
 //#endregion
 
