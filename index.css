@@ -1,0 +1,8 @@
+.focused {
+    font-weight: bold;
+    color: red;
+}
+
+.unfocused {
+    font-weight: 100;
+}
