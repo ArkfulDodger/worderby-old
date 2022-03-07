@@ -12,6 +12,8 @@ const playerForm = document.getElementById('player-form')
 const playerPrompt = document.getElementById('player-prompt');
 const playerInput = document.getElementById('player-input');
 
+const frankenword = document.getElementById('frankenword');
+
 //#endregion
 
 
@@ -81,6 +83,24 @@ function cycleTitle() {
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
+playerForm.addEventListener('submit', submitAnswer)
 
+function submitAnswer(e) {
+    e.preventDefault();
+    const word = findSubmittedWord();
+
+    // add word to frankenword
+    frankenword.textContent += playerInput.value;
+
+    // set word as new prompt
+    playerPrompt.textContent = word;
+
+    // reset form
+    playerForm.reset();
+}
+
+function findSubmittedWord() {
+    return 'gingerbread'  //TODO: update with actual functionality. Current is test placeholder
+}
 
 //#endregion
