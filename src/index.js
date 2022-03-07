@@ -33,7 +33,8 @@ const title2 = document.getElementById('title-2');
 const title3 = document.getElementById('title-3');
 
 const playerForm = document.getElementById('player-form')
-const playerPrompt = document.getElementById('player-prompt');
+const promptUnusable = document.getElementById('prompt-unusable');
+const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
 
 const frankenword = document.getElementById('frankenword');
@@ -109,8 +110,6 @@ function addEventListeners() {
 function submitAnswer(e) {
     e.preventDefault();
 
-    playerInput.placeholder = "";
-
     testWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
@@ -119,10 +118,14 @@ function submitAnswer(e) {
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
-            playerPrompt.textContent = wordEntry[0].word;
+            promptUnusable.textContent = wordEntry[0].word[0];
+            promptUsable.textContent = wordEntry[0].word.slice(1);
 
             // reset form
             playerForm.reset();
+
+            // remove placeholder
+            playerInput.placeholder = "";
 
         // if input did not yield a valid entry in the API
         } else {
@@ -137,10 +140,11 @@ function testWord() {
     const promisesArray = [];
     
     // test each possible combination of prompt letters and player input, starting with the second letter
-    for (i = 1; i < playerPrompt.textContent.length; i++) {
+    for (i = 0; i < promptUsable.textContent.length; i++) {
         // get this word to test
-        const testWord = playerPrompt.textContent.slice(i) + playerInput.value;
-
+        const testWord = promptUsable.textContent.slice(i) + playerInput.value;
+        console.log(testWord);
+        
         // add the Promise reference to the promises array
         promisesArray.push(getWord(testWord));
     }

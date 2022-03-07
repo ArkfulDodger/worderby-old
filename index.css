@@ -1,3 +1,8 @@
+body {
+    font-size: 16pt;
+    font-family: Arial, sans-serif;
+}
+
 .focused {
     font-weight: bold;
     color: red;
@@ -5,4 +10,21 @@
 
 .unfocused {
     font-weight: 100;
+}
+
+#prompt-unusable {
+    color: rgb(0,0,0,0.35);
+}
+
+#prompt-usable {
+    font-weight: bold;
+}
+
+#player-input {
+    font-size: 16pt;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: blue
 }
