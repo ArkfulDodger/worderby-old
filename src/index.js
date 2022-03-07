@@ -1,3 +1,24 @@
+//#region API OPTIONS
+
+// Datamuse API
+// useful for: getting a list of words that start with/end with a string
+// site: https://www.datamuse.com/api/
+// GET URL: https://api.datamuse.com/words?sp=${word}
+
+// Free Dictionary API
+// useful for: getting exact match (or lack of match) for word
+// site: https://dictionaryapi.dev/
+// GET URL: https://api.dictionaryapi.dev/api/v2/entries/en/${word}
+
+// WordsAPI
+// site: https://www.wordsapi.com/
+// GET URL: [need to register]
+
+
+//#endregion
+
+
+
 //#region GLOBAL VARIABLES
 // ----------------------------------------------------------------------
 // Declare any global variables we need in this region
@@ -26,6 +47,8 @@ const frankenword = document.getElementById('frankenword');
 // ▼ (Type below this line) ▼
 
 startTitleAnimation();
+
+
 
 //#endregion
 
@@ -83,24 +106,81 @@ function cycleTitle() {
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
+
+// Add event listener for player answer submit
 playerForm.addEventListener('submit', submitAnswer)
 
+// callback for player answer submission
 function submitAnswer(e) {
     e.preventDefault();
-    const word = findSubmittedWord();
 
-    // add word to frankenword
-    frankenword.textContent += playerInput.value;
+    testWord()
+    .then( wordEntry => {
+        if (wordEntry) {
+            // add input to frankenword
+            frankenword.textContent += playerInput.value;
 
-    // set word as new prompt
-    playerPrompt.textContent = word;
+            // set word as new prompt
+            playerPrompt.textContent = wordEntry[0].word;
 
-    // reset form
-    playerForm.reset();
+            // reset form
+            playerForm.reset();
+        } else {
+            alert('word not found, try again!')
+        }
+    })
 }
 
-function findSubmittedWord() {
-    return 'gingerbread'  //TODO: update with actual functionality. Current is test placeholder
+
+// function findSubmittedWord() {
+//     let promptLettersUsed = playerPrompt.textContent.slice(1);
+
+//     // //check if word is in dictionary API
+//     while (promptLettersUsed.length > 0) {
+//         let testWord = promptLettersUsed + playerInput.value;
+//         console.log(testWord);
+
+//         // return fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${testWord}`)
+//         // .then( res => res.status === 200 ? res.json() : `error`)
+//         // .then( data => data === 'error' ? false : data[0].word)
+//         // .catch( error => console.log(error.message));
+
+//         promptLettersUsed = promptLettersUsed.slice(1);
+//     }
+
+//     return 'gingerbread';
+// }
+
+function testWord() {
+    // declare an array to contain all fetch (GET) promises
+    const promisesArray = [];
+    
+    // test each possible combination of prompt letters and player input, starting with the second letter
+    for (i = 1; i < playerPrompt.textContent.length; i++) {
+        // get this word to test
+        const testWord = playerPrompt.textContent.slice(i) + playerInput.value;
+
+        // get Promise (fetch) reference for this word
+        const getReq = getWord(testWord);
+
+        // add the Promise reference to the promises array
+        promisesArray.push(getReq);
+    }
+
+    // return the first (& therefore longest) existing (truthy) result from the returned words array
+    return Promise.all(promisesArray)
+    .then(returnedWords => returnedWords.find(x => !!x));
 }
+
+// attempt to find (presumed) word in dictionary API. Return dictionary entry or ""
+function getWord(word) {
+    return fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+    // parse json response if status is 200, otherwise return ""
+    .then( res => res.status === 200 ? res.json() : "")
+    // return parsed dictionary entry, or ""
+    .then( data => data ? data : "")
+    .catch( error => console.log(error.message))
+}
+
 
 //#endregion
