@@ -109,6 +109,8 @@ function addEventListeners() {
 function submitAnswer(e) {
     e.preventDefault();
 
+    playerInput.placeholder = "";
+
     testWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
