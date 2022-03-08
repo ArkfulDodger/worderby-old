@@ -32,10 +32,13 @@ const title1 = document.getElementById('title-1');
 const title2 = document.getElementById('title-2');
 const title3 = document.getElementById('title-3');
 
-const playerForm = document.getElementById('player-form')
+const playerForm = document.getElementById('player-form');
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
+const promptNeutralText = promptUsable.children[0].textContent;
+const promptDimText = promptUsable.children[1].textContent;
+const promptLitText = promptUsable.children[2].textContent;
 
 const frankenword = document.getElementById('frankenword');
 
@@ -112,7 +115,7 @@ function addEventListeners() {
     
     // *** LEAVE COMMENTED OUT *** // this works, but creates too many GET requests, and will lock us out of the API
     // when user types in input field, prompt text will highlight if input makes a valid solution
-    // playerInput.addEventListener('input', autoHighlightPrompt)
+    playerInput.addEventListener('input', autoHighlightPrompt)
 }
 
 // callback for when player submits an answer
@@ -127,10 +130,11 @@ function submitAnswer(e) {
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
-            promptUnusable.textContent = wordEntry[0].word[0];
-            promptUsable.children[0].textContent = wordEntry[0].word.slice(1);
-            promptUsable.children[1].textContent = "";
-            promptUsable.children[2].textContent = "";
+            let newWord = wordEntry[0].word
+            promptUnusable.textContent = newWord[0];
+            promptNeutralText = newWord.slice(1);
+            promptDimText = "";
+            promptLitText = "";
 
             // reset form
             playerForm.reset();
@@ -171,9 +175,9 @@ function testWord() {
 function getWord(word) {
     return fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
     // parse json response if status is 200, otherwise return ""
-    .then( res => res.status === 200 ? res.json() : "")
+    .then( res => res.status === 200 ? res.json() : false)
     // return parsed dictionary entry, or ""
-    .then( data => data ? data : "")
+    .then( data => data ? data : false)
     .catch( error => console.log(error.message))
 }
 
@@ -194,16 +198,16 @@ function autoHighlightPrompt() {
                 let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
 
                 // and assign to appropriate styled spans
-                promptUsable.children[0].textContent = "";
-                promptUsable.children[1].textContent = unusedPrompt;
-                promptUsable.children[2].textContent = usedPrompt;
+                promptNeutralText = "";
+                promptDimText = unusedPrompt;
+                promptLitText = usedPrompt;
     
             // if input did not yield a valid entry in the API...
             } else {
                 // place all prompt text in second, greyed-out, span
-                promptUsable.children[0].textContent = "";
-                promptUsable.children[1].textContent = promptText;
-                promptUsable.children[2].textContent = "";
+                promptNeutralText = "";
+                promptDimText = promptText;
+                promptLitText = "";
             }
         })
 
