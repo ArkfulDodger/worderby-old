@@ -1,33 +1,42 @@
 body {
     font-size: 16pt;
     font-family: Arial, sans-serif;
-    background-color: #fac068;
+    background-color: #ffefcd;
     
 }
 
-#player-input {
+/* #player-input {
     background-color: #ECE63D;
     
-}
+} */
 
 #header,
 #play-area,
-#frankenword {
+#frankenword,
+#new-game {
     text-align: center;
     
 }
 
 #header {
-    font-size: 32pt;
+    font-size: 42pt;
+    max-width: 100%;
+    font-family: 'American Typewriter';
     padding-bottom: 0px;
     margin-bottom: 100px
 }
 
+#player-form, #player-input {
+    font-size: 30pt;
+}
 
+#frankenword {
+    font-family: 'American Typewriter';
+}
 
 .focused {
     font-weight: bold;
-    color: red;
+    color: rgba(0, 52, 2, 0.897);
 }
 
 .unfocused {
@@ -35,7 +44,7 @@ body {
 }
 
 .using {
-    color: blue;
+    color: rgba(0, 85, 3, 0.897);
 }
 
 .not-using {
@@ -57,13 +66,13 @@ body {
 }
 
 #player-input {
-    font-size: 16pt;
     font-family: Arial, sans-serif;
     font-weight: bold;
     outline: 0;
     border-width: 0 0 2px;
-    border-color: blue;
+    border-color: rgb(116, 64, 0);
     padding: 0px;
+    background-color: #ffefcd;
 }
 
 .scorecard-container {
