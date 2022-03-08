@@ -36,9 +36,9 @@ const playerForm = document.getElementById('player-form');
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
-const promptNeutralText = promptUsable.children[0].textContent;
-const promptDimText = promptUsable.children[1].textContent;
-const promptLitText = promptUsable.children[2].textContent;
+const promptNeutralText = promptUsable.children[0];
+const promptDimText = promptUsable.children[1];
+const promptLitText = promptUsable.children[2];
 
 const frankenword = document.getElementById('frankenword');
 
@@ -115,7 +115,7 @@ function addEventListeners() {
     
     // *** LEAVE COMMENTED OUT *** // this works, but creates too many GET requests, and will lock us out of the API
     // when user types in input field, prompt text will highlight if input makes a valid solution
-    playerInput.addEventListener('input', autoHighlightPrompt)
+    // playerInput.addEventListener('input', autoHighlightPrompt)
 }
 
 // callback for when player submits an answer
@@ -126,15 +126,16 @@ function submitAnswer(e) {
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
+            console.log(wordEntry);
             // add input to frankenword
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
             let newWord = wordEntry[0].word
             promptUnusable.textContent = newWord[0];
-            promptNeutralText = newWord.slice(1);
-            promptDimText = "";
-            promptLitText = "";
+            promptNeutralText.textContent = newWord.slice(1);
+            promptDimText.textContent = "";
+            promptLitText.textContent = "";
 
             // reset form
             playerForm.reset();
@@ -198,16 +199,16 @@ function autoHighlightPrompt() {
                 let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
 
                 // and assign to appropriate styled spans
-                promptNeutralText = "";
-                promptDimText = unusedPrompt;
-                promptLitText = usedPrompt;
+                promptNeutralText.textContent = "";
+                promptDimText.textContent = unusedPrompt;
+                promptLitText.textContent = usedPrompt;
     
             // if input did not yield a valid entry in the API...
             } else {
                 // place all prompt text in second, greyed-out, span
-                promptNeutralText = "";
-                promptDimText = promptText;
-                promptLitText = "";
+                promptNeutralText.textContent = "";
+                promptDimText.textContent = promptText;
+                promptLitText.textContent = "";
             }
         })
 
