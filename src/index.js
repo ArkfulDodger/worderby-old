@@ -200,9 +200,21 @@ function formatPromptSpans() {
 }
 
 function selectPromptLetters(i) {
-    selectedPromptText = availablePromptText.slice(i);
-    highlightPromptStartingAt(i);
-    playerInput.focus();
+    // if selected current starting letter, deselect
+    if (selectedPromptText === availablePromptText.slice(i)) {
+        selectedPromptText = "";
+        removePromptHighlight();
+    } else {
+        selectedPromptText = availablePromptText.slice(i);
+        highlightPromptStartingAt(i);
+        playerInput.focus();
+    }    
+}
+
+function removePromptHighlight() {
+    for (let i = 0; i < availablePromptText.length; i++) {
+        promptNeutralText.children[i].className = "";
+    }
 }
 
 function highlightPromptStartingAt(startIndex) {
