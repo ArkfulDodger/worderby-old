@@ -39,6 +39,7 @@ const playerInput = document.getElementById('player-input');
 const promptNeutralText = promptUsable.children[0];
 const promptDimText = promptUsable.children[1];
 const promptLitText = promptUsable.children[2];
+let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 
 const frankenword = document.getElementById('frankenword');
@@ -134,10 +135,9 @@ function submitAnswer(e) {
 
             // set played word as new prompt
             let newWord = wordEntry[0].word
+            availablePromptText = newWord.slice(1)
             promptUnusable.textContent = newWord[0];
-            promptNeutralText.textContent = newWord.slice(1);
-            promptDimText.textContent = "";
-            promptLitText.textContent = "";
+            formatPromptSpans();
 
             // reset form
             playerForm.reset();
@@ -158,9 +158,9 @@ function testWord() {
     const promisesArray = [];
     
     // test each possible combination of prompt letters and player input, starting with the second letter
-    for (i = 0; i < promptUsable.textContent.length; i++) {
+    for (i = 0; i < availablePromptText.length; i++) {
         // get this word to test
-        const testWord = promptUsable.textContent.slice(i) + playerInput.value;
+        const testWord = availablePromptText.slice(i) + playerInput.value;
         console.log(testWord);
         
         // add the Promise reference to the promises array
@@ -185,18 +185,15 @@ function getWord(word) {
 }
 
 function formatPromptSpans() {
-    // get reference to complete prompt text
-    let promptText = promptUsable.textContent;
-
     // clear span HTML content
     promptNeutralText.innerHTML = "";
     promptDimText.innerHTML = "";
     promptLitText.innerHTML = "";
 
-    for (let i = 0; i < promptText.length; i++) {
+    for (let i = 0; i < availablePromptText.length; i++) {
         const span = document.createElement('span');
         span.dataset.index
-        span.textContent = promptText[i];
+        span.textContent = availablePromptText[i];
         span.addEventListener('click', () => selectPromptLetters(i))
         promptNeutralText.appendChild(span);
     }
@@ -204,13 +201,13 @@ function formatPromptSpans() {
 
 function selectPromptLetters(i) {
     console.log(i);
-    selectedPromptText = promptUsable.textContent.slice(i);
+    selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
 }
 
 function highlightPromptStartingAt(startIndex) {
     console.log('highlight called');
-    for (let i = 0; i < promptUsable.textContent.length; i++) {
+    for (let i = 0; i < availablePromptText.length; i++) {
         promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
     }
 }
@@ -222,7 +219,7 @@ function highlightPromptStartingAt(startIndex) {
 // // automatically highlights portion of prompt that creates a valid solution with user input
 // // makes too many Get Calls, hits limit
 // function autoHighlightPrompt() {
-//     let promptText = promptUsable.textContent
+//     let promptText = availablePromptText
 
 //     // if there is currently input from the player
 //     if (playerInput.value) {
@@ -233,8 +230,8 @@ function highlightPromptStartingAt(startIndex) {
 //                 // get used and unused strings from prompt...
 //                 let usedLength = wordEntry[0].word.length - playerInput.value.length;
 //                 let usedPrompt = wordEntry[0].word.slice(0, usedLength);
-//                 let unusedLength = promptUsable.textContent.length - usedLength;
-//                 let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
+//                 let unusedLength = availablePromptText.length - usedLength;
+//                 let unusedPrompt = availablePromptText.slice(0,unusedLength);
 
 //                 // and assign to appropriate styled spans
 //                 promptNeutralText.textContent = "";
