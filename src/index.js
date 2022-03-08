@@ -125,6 +125,11 @@ function addEventListeners() {
 function submitAnswer(e) {
     e.preventDefault();
 
+    if (!selectedPromptText) {
+        alert('must select at least one letter from prompt to begin your word!');
+        return;
+    }
+
     testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
