@@ -39,6 +39,7 @@ const playerInput = document.getElementById('player-input');
 const promptNeutralText = promptUsable.children[0];
 const promptDimText = promptUsable.children[1];
 const promptLitText = promptUsable.children[2];
+let selectedPromptText = "";
 
 const frankenword = document.getElementById('frankenword');
 
@@ -236,6 +237,27 @@ function autoHighlightPrompt() {
 function resetGame() {
     // find random prompt word
     console.log('reset game');
+}
+
+function formatPromptSpans() {
+    // get reference to complete prompt text
+    let promptText = promptUsable.textContent;
+
+    // clear span HTML content
+    promptNeutralText.innerHTML = "";
+    promptDimText.innerHTML = "";
+    promptLitText.innerHTML = "";
+
+    for (const [i, letter] of promptText.entries()) {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.addEventListener('click', () => selectPromptLetters(i))
+        promptNeutralText.appendChild(span);
+    }
+}
+
+function selectPromptLetters(i) {
+
 }
 
 //#endregion
