@@ -27,6 +27,11 @@ body {
 
 #prompt-unusable {
     color: rgb(0,0,0,0.35);
+    transition: color 0.1s;
+}
+
+#prompt-unusable.alert {
+    color: red;
 }
 
 #player-input {

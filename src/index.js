@@ -111,10 +111,13 @@ function cycleTitle() {
 // add all event listeners for the page
 function addEventListeners() {
     // When player submits text input form, they submit the word as their answer
-    playerForm.addEventListener('submit', submitAnswer)
+    playerForm.addEventListener('submit', submitAnswer);
     
     // When reset button is clicked, entire game resets
-    resetButton.addEventListener('click', resetGame)
+    resetButton.addEventListener('click', resetGame);
+
+    // When unusable prompt section is clicked, flash red and indicate off limits
+    promptUnusable.addEventListener('click', instructUnusablePrompt);
     
     // *** LEAVE COMMENTED OUT *** // this works, but creates too many GET requests, and will lock us out of the API
     // when user types in input field, prompt text will highlight if input makes a valid solution
@@ -283,6 +286,18 @@ function highlightPromptStartingAt(startIndex) {
 function resetGame() {
     // find random prompt word
     console.log('reset game');
+}
+
+function instructUnusablePrompt() {
+    flashTextRed(promptUnusable);
+}
+
+function flashTextRed(element) {
+    if (element.className === 'alert') {
+        return;
+    }
+    element.className = 'alert';
+    setTimeout(() => {element.className = ""}, 100);
 }
 
 //#endregion
