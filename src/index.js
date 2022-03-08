@@ -104,11 +104,15 @@ function cycleTitle() {
 
 // add all event listeners for the page
 function addEventListeners() {
-    // Add event listener for player answer submit
+    // When player submits text input form, they submit the word as their answer
     playerForm.addEventListener('submit', submitAnswer)
-
-    // Add event listener for game reset
+    
+    // When reset button is clicked, entire game resets
     resetButton.addEventListener('click', resetGame)
+    
+    // *** LEAVE COMMENTED OUT *** // this works, but creates too many GET requests, and will lock us out of the API
+    // when user types in input field, prompt text will highlight if input makes a valid solution
+    // playerInput.addEventListener('input', autoHighlightPrompt)
 }
 
 // callback for when player submits an answer
@@ -124,7 +128,9 @@ function submitAnswer(e) {
 
             // set played word as new prompt
             promptUnusable.textContent = wordEntry[0].word[0];
-            promptUsable.textContent = wordEntry[0].word.slice(1);
+            promptUsable.children[0].textContent = wordEntry[0].word.slice(1);
+            promptUsable.children[1].textContent = "";
+            promptUsable.children[2].textContent = "";
 
             // reset form
             playerForm.reset();
@@ -156,7 +162,9 @@ function testWord() {
 
     // return the first (& therefore longest) existing (truthy) result from the returned words array
     return Promise.all(promisesArray)
-    .then(returnedWords => returnedWords.find(x => !!x));
+    .then(returnedWords => {
+        console.log(returnedWords);
+        return returnedWords.find(x => !!x)});
 }
 
 // attempt to Get (presumed) word in dictionary API. Return dictionary entry or ""
@@ -169,6 +177,45 @@ function getWord(word) {
     .catch( error => console.log(error.message))
 }
 
+// automatically highlights portion of prompt that creates a valid solution with user input
+function autoHighlightPrompt() {
+    let promptText = promptUsable.textContent
+
+    // if there is currently input from the player
+    if (playerInput.value) {
+        testWord()
+        .then( wordEntry => {
+            // if a valid word entry was found in the API...
+            if (wordEntry) {
+                // get used and unused strings from prompt...
+                let usedLength = wordEntry[0].word.length - playerInput.value.length;
+                let usedPrompt = wordEntry[0].word.slice(0, usedLength);
+                let unusedLength = promptUsable.textContent.length - usedLength;
+                let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
+
+                // and assign to appropriate styled spans
+                promptUsable.children[0].textContent = "";
+                promptUsable.children[1].textContent = unusedPrompt;
+                promptUsable.children[2].textContent = usedPrompt;
+    
+            // if input did not yield a valid entry in the API...
+            } else {
+                // place all prompt text in second, greyed-out, span
+                promptUsable.children[0].textContent = "";
+                promptUsable.children[1].textContent = promptText;
+                promptUsable.children[2].textContent = "";
+            }
+        })
+
+    // if the input field is currently blank
+    } else {
+        // all prompt text in first, unstyled, span
+        promptUsable.children[0].textContent = promptText;
+        promptUsable.children[1].textContent = ""
+        promptUsable.children[2].textContent = "";
+    }
+}
+
 //#endregion
 
 
@@ -179,6 +226,7 @@ function getWord(word) {
 // the region above.
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
+
 
 function resetGame() {
     // find random prompt word

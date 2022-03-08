@@ -12,12 +12,21 @@ body {
     font-weight: 100;
 }
 
-#prompt-unusable {
+.using {
+    color: blue;
+}
+
+.not-using {
+    font-weight: normal;
     color: rgb(0,0,0,0.35);
 }
 
 #prompt-usable {
     font-weight: bold;
+}
+
+#prompt-unusable {
+    color: rgb(0,0,0,0.35);
 }
 
 #player-input {
@@ -26,5 +35,6 @@ body {
     font-weight: bold;
     outline: 0;
     border-width: 0 0 2px;
-    border-color: blue
+    border-color: blue;
+    padding: 0px;
 }
