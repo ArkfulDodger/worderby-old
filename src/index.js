@@ -58,6 +58,7 @@ const resetButton = document.getElementById('reset-button');
 
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
+formatPromptSpans();
 
 //#endregion
 
@@ -248,16 +249,26 @@ function formatPromptSpans() {
     promptDimText.innerHTML = "";
     promptLitText.innerHTML = "";
 
-    for (const [i, letter] of promptText.entries()) {
+    for (let i = 0; i < promptText.length; i++) {
         const span = document.createElement('span');
-        span.textContent = letter;
+        span.dataset.index
+        span.textContent = promptText[i];
         span.addEventListener('click', () => selectPromptLetters(i))
         promptNeutralText.appendChild(span);
     }
 }
 
 function selectPromptLetters(i) {
+    console.log(i);
+    selectedPromptText = promptUsable.textContent.slice(i);
+    highlightPromptStartingAt(i);
+}
 
+function highlightPromptStartingAt(startIndex) {
+    console.log('highlight called');
+    for (let i = 0; i < promptUsable.textContent.length; i++) {
+        promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
+    }
 }
 
 //#endregion
