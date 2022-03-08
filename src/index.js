@@ -125,17 +125,16 @@ function addEventListeners() {
 function submitAnswer(e) {
     e.preventDefault();
 
-    testWord()
+    testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
-            console.log(wordEntry);
             // add input to frankenword
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
-            let newWord = wordEntry[0].word
-            availablePromptText = newWord.slice(1)
+            let newWord = wordEntry[0].word;
+            availablePromptText = newWord.slice(1);
             promptUnusable.textContent = newWord[0];
             formatPromptSpans();
 
@@ -152,26 +151,11 @@ function submitAnswer(e) {
     })
 }
 
-// test player's answer (returns dictionary entry or alerts to try again)
-function testWord() {
-    // declare an array to contain all fetch (GET) promises
-    const promisesArray = [];
-    
-    // test each possible combination of prompt letters and player input, starting with the second letter
-    for (i = 0; i < availablePromptText.length; i++) {
-        // get this word to test
-        const testWord = availablePromptText.slice(i) + playerInput.value;
-        console.log(testWord);
-        
-        // add the Promise reference to the promises array
-        promisesArray.push(getWord(testWord));
-    }
+function testSingleWord() {
+    const testWord = selectedPromptText + playerInput.value;
+    console.log('testing: ' + testWord);
 
-    // return the first (& therefore longest) existing (truthy) result from the returned words array
-    return Promise.all(promisesArray)
-    .then(returnedWords => {
-        console.log(returnedWords);
-        return returnedWords.find(x => !!x)});
+    return getWord(testWord)
 }
 
 // attempt to Get (presumed) word in dictionary API. Return dictionary entry or ""
@@ -197,16 +181,16 @@ function formatPromptSpans() {
         span.addEventListener('click', () => selectPromptLetters(i))
         promptNeutralText.appendChild(span);
     }
+
+    selectedPromptText = "";
 }
 
 function selectPromptLetters(i) {
-    console.log(i);
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
 }
 
 function highlightPromptStartingAt(startIndex) {
-    console.log('highlight called');
     for (let i = 0; i < availablePromptText.length; i++) {
         promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
     }
@@ -216,8 +200,30 @@ function highlightPromptStartingAt(startIndex) {
 
 //#region NOT IN USE
 
+// // WHY NOT IN USE: player prompt selection means only one word needs to be tested, not all possible from input
+// // test player's answer (returns dictionary entry or alerts to try again)
+// function testWord() {
+//     // declare an array to contain all fetch (GET) promises
+//     const promisesArray = [];
+    
+//     // test each possible combination of prompt letters and player input, starting with the second letter
+//     for (i = 0; i < availablePromptText.length; i++) {
+//         // get this word to test
+//         const testWord = availablePromptText.slice(i) + playerInput.value;
+        
+//         // add the Promise reference to the promises array
+//         promisesArray.push(getWord(testWord));
+//     }
+
+//     // return the first (& therefore longest) existing (truthy) result from the returned words array
+//     return Promise.all(promisesArray)
+//     .then(returnedWords => {
+//         console.log(returnedWords);
+//         return returnedWords.find(x => !!x)});
+// }
+
+// // WHY NOT IN USE: makes too many Get Calls, hits API limit. Replaced with manual player prompt selection
 // // automatically highlights portion of prompt that creates a valid solution with user input
-// // makes too many Get Calls, hits limit
 // function autoHighlightPrompt() {
 //     let promptText = availablePromptText
 
