@@ -193,6 +193,7 @@ function formatPromptSpans() {
 function selectPromptLetters(i) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
+    playerInput.focus();
 }
 
 function highlightPromptStartingAt(startIndex) {
