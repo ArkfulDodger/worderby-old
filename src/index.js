@@ -28,7 +28,7 @@
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-const title1 = document.getElementById('title-1');
+const title1 = document.getElementById('title-1'); // omg, merge conflict
 const title2 = document.getElementById('title-2');
 const title3 = document.getElementById('title-3');
 
