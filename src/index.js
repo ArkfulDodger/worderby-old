@@ -134,6 +134,9 @@ function submitAnswer(e) {
     if (!selectedPromptText) {
         alert('must select at least one letter from prompt to begin your word!');
         return;
+    } else if (!playerInput.value) {
+        alert('must enter at least one letter to play a word!');
+        return;
     }
 
     testSingleWord()
