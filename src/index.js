@@ -46,6 +46,9 @@ const frankenword = document.getElementById('frankenword');
 
 const resetButton = document.getElementById('reset-button');
 
+const pointsPerPromptLetter = 5;
+const pointsPerInputLetter = 1;
+
 //#endregion
 
 
@@ -137,6 +140,9 @@ function submitAnswer(e) {
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
+            // score word
+            console.log('Scored ' + getScoreForCurrentWord() + ' points');
+
             // add input to frankenword
             frankenword.textContent += playerInput.value;
 
@@ -203,6 +209,14 @@ function highlightPromptStartingAt(startIndex) {
     for (let i = 0; i < availablePromptText.length; i++) {
         promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
     }
+}
+
+function flashTextRed(element) {
+    if (element.className === 'alert') {
+        return;
+    }
+    element.className = 'alert';
+    setTimeout(() => {element.className = ""}, 100);
 }
 
 //#endregion
@@ -292,12 +306,11 @@ function instructUnusablePrompt() {
     flashTextRed(promptUnusable);
 }
 
-function flashTextRed(element) {
-    if (element.className === 'alert') {
-        return;
-    }
-    element.className = 'alert';
-    setTimeout(() => {element.className = ""}, 100);
+function getScoreForCurrentWord() {
+    let promptPoints = selectedPromptText.length * pointsPerPromptLetter;
+    let inputPoints = playerInput.value.length * pointsPerInputLetter;
+
+    return promptPoints + inputPoints;
 }
 
 //#endregion
