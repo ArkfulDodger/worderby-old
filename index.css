@@ -1,7 +1,29 @@
 body {
     font-size: 16pt;
     font-family: Arial, sans-serif;
+    background-color: #fac068;
+    
 }
+
+#player-input {
+    background-color: #ECE63D;
+    
+}
+
+#header,
+#play-area,
+#frankenword {
+    text-align: center;
+    
+}
+
+#header {
+    font-size: 32pt;
+    padding-bottom: 0px;
+    margin-bottom: 100px
+}
+
+
 
 .focused {
     font-weight: bold;
@@ -37,4 +59,36 @@ body {
     border-width: 0 0 2px;
     border-color: blue;
     padding: 0px;
+}
+
+.scorecard-container {
+    display: inline-block;
+    margin-top: 100px;
+}
+
+#player-1-title{
+    margin-left: 150px;
+}
+
+#player-2-title{
+    margin-left: 450px;
+}
+.scorecard {
+    list-style-type: none;
+    margin-top: 25px;
+    
+}
+
+#player-1-score { 
+    
+        
+}
+
+#player-2-score {
+    margin-left: 300px;
+       
+}
+
+.rounds {
+    margin-top: 30px;
 }
