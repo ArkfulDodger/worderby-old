@@ -184,62 +184,6 @@ function getWord(word) {
     .catch( error => console.log(error.message))
 }
 
-// automatically highlights portion of prompt that creates a valid solution with user input
-function autoHighlightPrompt() {
-    let promptText = promptUsable.textContent
-
-    // if there is currently input from the player
-    if (playerInput.value) {
-        testWord()
-        .then( wordEntry => {
-            // if a valid word entry was found in the API...
-            if (wordEntry) {
-                // get used and unused strings from prompt...
-                let usedLength = wordEntry[0].word.length - playerInput.value.length;
-                let usedPrompt = wordEntry[0].word.slice(0, usedLength);
-                let unusedLength = promptUsable.textContent.length - usedLength;
-                let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
-
-                // and assign to appropriate styled spans
-                promptNeutralText.textContent = "";
-                promptDimText.textContent = unusedPrompt;
-                promptLitText.textContent = usedPrompt;
-    
-            // if input did not yield a valid entry in the API...
-            } else {
-                // place all prompt text in second, greyed-out, span
-                promptNeutralText.textContent = "";
-                promptDimText.textContent = promptText;
-                promptLitText.textContent = "";
-            }
-        })
-
-    // if the input field is currently blank
-    } else {
-        // all prompt text in first, unstyled, span
-        promptUsable.children[0].textContent = promptText;
-        promptUsable.children[1].textContent = ""
-        promptUsable.children[2].textContent = "";
-    }
-}
-
-//#endregion
-
-
-//#region FUNCTIONS - IN-PROGRESS
-// ----------------------------------------------------------------------
-// Use the space below to when writing new functions.
-// Once you are satisfied with how the function looks/works, move it to
-// the region above.
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
-
-
-function resetGame() {
-    // find random prompt word
-    console.log('reset game');
-}
-
 function formatPromptSpans() {
     // get reference to complete prompt text
     let promptText = promptUsable.textContent;
@@ -269,6 +213,67 @@ function highlightPromptStartingAt(startIndex) {
     for (let i = 0; i < promptUsable.textContent.length; i++) {
         promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
     }
+}
+
+//#endregion
+
+//#region NOT IN USE
+
+// // automatically highlights portion of prompt that creates a valid solution with user input
+// // makes too many Get Calls, hits limit
+// function autoHighlightPrompt() {
+//     let promptText = promptUsable.textContent
+
+//     // if there is currently input from the player
+//     if (playerInput.value) {
+//         testWord()
+//         .then( wordEntry => {
+//             // if a valid word entry was found in the API...
+//             if (wordEntry) {
+//                 // get used and unused strings from prompt...
+//                 let usedLength = wordEntry[0].word.length - playerInput.value.length;
+//                 let usedPrompt = wordEntry[0].word.slice(0, usedLength);
+//                 let unusedLength = promptUsable.textContent.length - usedLength;
+//                 let unusedPrompt = promptUsable.textContent.slice(0,unusedLength);
+
+//                 // and assign to appropriate styled spans
+//                 promptNeutralText.textContent = "";
+//                 promptDimText.textContent = unusedPrompt;
+//                 promptLitText.textContent = usedPrompt;
+    
+//             // if input did not yield a valid entry in the API...
+//             } else {
+//                 // place all prompt text in second, greyed-out, span
+//                 promptNeutralText.textContent = "";
+//                 promptDimText.textContent = promptText;
+//                 promptLitText.textContent = "";
+//             }
+//         })
+
+//     // if the input field is currently blank
+//     } else {
+//         // all prompt text in first, unstyled, span
+//         promptUsable.children[0].textContent = promptText;
+//         promptUsable.children[1].textContent = ""
+//         promptUsable.children[2].textContent = "";
+//     }
+// }
+
+//#endregion
+
+
+//#region FUNCTIONS - IN-PROGRESS
+// ----------------------------------------------------------------------
+// Use the space below to when writing new functions.
+// Once you are satisfied with how the function looks/works, move it to
+// the region above.
+// ----------------------------------------------------------------------
+// ▼ (Type below this line) ▼
+
+
+function resetGame() {
+    // find random prompt word
+    console.log('reset game');
 }
 
 //#endregion
