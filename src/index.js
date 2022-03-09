@@ -35,7 +35,7 @@ const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
 const submitButton = document.querySelector('#player-form [type="submit"]');
 let availablePromptText = promptUsable.textContent;
-let selectedPromptText = "";
+let selectedPromptText;
 
 // frankenword element
 const frankenword = document.getElementById('frankenword');
@@ -63,6 +63,7 @@ let voice;
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
+selectPromptLetters();
 resizeInput();
 getVoice();
 
@@ -161,8 +162,9 @@ function submitAnswer(e) {
             // set played word as new prompt
             let newWord = wordEntry[0].word;
             availablePromptText = newWord.slice(1);
-            promptUnusable.textContent = newWord[0];
+            promptUnusable.textContent = newWord[0] + '/';
             formatPromptSpans();
+            selectPromptLetters();
 
             // reset form
             playerForm.reset();
@@ -218,24 +220,10 @@ function formatPromptSpans() {
 }
 
 // "select" which prompt letters player is using based off starting letter index (in usable prompt)
-function selectPromptLetters(i) {
-    // if selected current starting letter, deselect
-    if (selectedPromptText === availablePromptText.slice(i)) {
-        deselectPromptLetters();
-    } else {
-        selectedPromptText = availablePromptText.slice(i);
-        highlightPromptStartingAt(i);
-        playerInput.focus();
-    }    
-}
-
-// set usable prompt text back to default font styling
-function deselectPromptLetters() {
-    selectedPromptText = "";
-
-    for (let i = 0; i < availablePromptText.length; i++) {
-        promptUsable.children[i].className = "";
-    }
+function selectPromptLetters(i = 0) {
+    selectedPromptText = availablePromptText.slice(i);
+    highlightPromptStartingAt(i);
+    playerInput.focus();
 }
 
 // highlight selected portion of prompt, dim unused portion
@@ -340,6 +328,17 @@ function resizeInput() {
 
 //#region NOT IN USE ----------------------------------------------------
 //-----------------------------------------------------------------------
+
+
+// WHY NOT IN USE: no longer allowing total deselect of prompt
+// // set usable prompt text back to default font styling
+// function deselectPromptLetters() {
+//     selectedPromptText = "";
+
+//     for (let i = 0; i < availablePromptText.length; i++) {
+//         promptUsable.children[i].className = "";
+//     }
+// }
 
 // // WHY NOT IN USE: player prompt selection means only one word needs to be tested, not all possible from input
 // // test player's answer (returns dictionary entry or alerts to try again)
