@@ -1,8 +1,5 @@
-//#region API OPTIONS
-// ----------------------------------------------------------------------
-// API databases which migh be able to be used for the app
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
+//#region API OPTIONS ---------------------------------------------------
+//-----------------------------------------------------------------------
 
 // ***** CURRENT OPTION IN USE *****
 // Free Dictionary API
@@ -22,11 +19,8 @@
 //#endregion
 
 
-//#region GLOBAL VARIABLES
-// ----------------------------------------------------------------------
-// Declare any global variables we need in this region
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
+//#region GLOBAL VARIABLES ----------------------------------------------
+//-----------------------------------------------------------------------
 
 
 // elements from title animation
@@ -56,13 +50,8 @@ const pointsPerInputLetter = 1;
 //#endregion
 
 
-//#region CODE RUN ON DOC LOAD
-// ----------------------------------------------------------------------
-// Any code that should actually be run upon this file being loaded 
-// (other than global variable declarations) should go in this region.
-// This includes things like function invocations
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
+//#region CODE RUN ON DOC LOAD ------------------------------------------
+//-----------------------------------------------------------------------
 
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
@@ -71,11 +60,8 @@ formatPromptSpans();
 //#endregion
 
 
-//#region FUNCTIONS - COMPLETE
-// ----------------------------------------------------------------------
-// Put any functions here that are complete and part of our working code
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
+//#region FUNCTIONS - COMPLETE ------------------------------------------
+//-----------------------------------------------------------------------
 
 // starts the title animation
 function runTitleAnimationAtInterval(intervalInSeconds) {
@@ -244,7 +230,8 @@ function flashTextRed(element) {
 //#endregion
 
 
-//#region NOT IN USE
+//#region NOT IN USE ----------------------------------------------------
+//-----------------------------------------------------------------------
 
 // // WHY NOT IN USE: player prompt selection means only one word needs to be tested, not all possible from input
 // // test player's answer (returns dictionary entry or alerts to try again)
@@ -315,14 +302,8 @@ function flashTextRed(element) {
 //#endregion
 
 
-//#region FUNCTIONS - IN-PROGRESS
-// ----------------------------------------------------------------------
-// Use the space below to when writing new functions.
-// Once you are satisfied with how the function looks/works, move it to
-// the region above.
-// ----------------------------------------------------------------------
-// ▼ (Type below this line) ▼
-
+//#region FUNCTIONS - IN-PROGRESS ---------------------------------------
+//-----------------------------------------------------------------------
 // reset page for new game
 function resetGame() {
     // find random prompt word
