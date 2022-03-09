@@ -111,6 +111,9 @@ function addEventListeners() {
 
     // When unusable prompt section is clicked, flash red and indicate off limits
     promptUnusable.addEventListener('click', instructUnusablePrompt);
+
+    // have document check for keyboard input
+    document.addEventListener('keydown', processKeyboardInput)
 }
 
 // callback for when player submits an answer
@@ -155,6 +158,7 @@ function submitAnswer(e) {
         }
 
         setFormDisabledTo(false);
+        playerInput.focus();
     })
 }
 
@@ -195,8 +199,7 @@ function formatPromptSpans() {
 function selectPromptLetters(i) {
     // if selected current starting letter, deselect
     if (selectedPromptText === availablePromptText.slice(i)) {
-        selectedPromptText = "";
-        removePromptHighlight();
+        deselectPromptLetters();
     } else {
         selectedPromptText = availablePromptText.slice(i);
         highlightPromptStartingAt(i);
@@ -205,7 +208,9 @@ function selectPromptLetters(i) {
 }
 
 // set usable prompt text back to default font styling
-function removePromptHighlight() {
+function deselectPromptLetters() {
+    selectedPromptText = "";
+
     for (let i = 0; i < availablePromptText.length; i++) {
         promptUsable.children[i].className = "";
     }
@@ -225,6 +230,38 @@ function flashTextRed(element) {
     }
     element.className = 'alert';
     setTimeout(() => {element.className = ""}, 100);
+}
+
+function setFormDisabledTo(bool) {
+    playerInput.disabled = bool;
+    submitButton.disabled = bool;
+}
+
+function processKeyboardInput(e) {
+    if (e.key === 'ArrowLeft' && e.shiftKey) {
+        adjustPromptSelectionLeft();
+    } else if (e.key === 'ArrowRight' && e.shiftKey) {
+        adjustPromptSelectionRight();
+    }
+}
+
+function adjustPromptSelectionLeft() {
+    if (!selectedPromptText || selectedPromptText === availablePromptText) {
+        selectPromptLetters(availablePromptText.length - 1);
+    } else {
+        let selectionStartIndex = availablePromptText.length - selectedPromptText.length - 1;
+        
+        selectPromptLetters(selectionStartIndex);
+    }
+}
+
+function adjustPromptSelectionRight() {
+    if (!selectedPromptText || selectedPromptText.length === 1) {
+        selectPromptLetters(0);
+    } else {
+        let selectionStartIndex = availablePromptText.length - selectedPromptText.length + 1;
+        selectPromptLetters(selectionStartIndex);
+    }
 }
 
 //#endregion
@@ -323,11 +360,5 @@ function getScoreForCurrentWord() {
     return promptPoints + inputPoints;
 }
 
-function setFormDisabledTo(bool) {
-    console.log('form disabled: ' + bool);
-
-    playerInput.disabled = bool;
-    submitButton.disabled = bool;
-}
 
 //#endregion
