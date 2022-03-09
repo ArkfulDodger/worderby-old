@@ -28,24 +28,27 @@
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-const title1 = document.getElementById('title-1'); // this test comment back in
-const title2 = document.getElementById('title-2');
-const title3 = document.getElementById('title-3');
 
+// elements from title animation
+const titleTextBeforeBold = document.getElementById('title-1');
+const titleTextBold = document.getElementById('title-2');
+const titleTextAfterBold = document.getElementById('title-3');
+
+// elements from player form (game area)
 const playerForm = document.getElementById('player-form');
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
-const promptNeutralText = promptUsable.children[0];
-const promptDimText = promptUsable.children[1];
-const promptLitText = promptUsable.children[2];
 let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 
+// frankenword element
 const frankenword = document.getElementById('frankenword');
 
-const resetButton = document.getElementById('reset-button');
+// new game button
+const newGameButton = document.getElementById('new-game-button');
 
+// game mechanics variables
 const pointsPerPromptLetter = 5;
 const pointsPerInputLetter = 1;
 
@@ -80,33 +83,33 @@ function runTitleAnimationAtInterval(intervalInSeconds) {
 
 // highlight the next word in the title animation sequence
 function cycleTitle() {
-    switch (title2.textContent) {
+    switch (titleTextBold.textContent) {
         case 'word':
-            title1.textContent = 'w';
-            title2.textContent = 'order';
-            title3.textContent = 'bytes';
+            titleTextBeforeBold.textContent = 'w';
+            titleTextBold.textContent = 'order';
+            titleTextAfterBold.textContent = 'bytes';
             break;
         case 'order':
-            title1.textContent = 'wor';
-            title2.textContent = 'derby';
-            title3.textContent = 'tes';
+            titleTextBeforeBold.textContent = 'wor';
+            titleTextBold.textContent = 'derby';
+            titleTextAfterBold.textContent = 'tes';
             break;
         case 'derby':
-            title1.textContent = 'worder';
-            title2.textContent = 'bytes';
-            title3.textContent = '';
+            titleTextBeforeBold.textContent = 'worder';
+            titleTextBold.textContent = 'bytes';
+            titleTextAfterBold.textContent = '';
             break;
         case 'bytes':
-            title1.textContent = '';
-            title2.textContent = 'word';
-            title3.textContent = 'erbytes';
+            titleTextBeforeBold.textContent = '';
+            titleTextBold.textContent = 'word';
+            titleTextAfterBold.textContent = 'erbytes';
             break;
         
         default:
             console.error('title text cycle broken')
-            title1.textContent = '';
-            title2.textContent = 'word';
-            title3.textContent = 'erbytes';
+            titleTextBeforeBold.textContent = '';
+            titleTextBold.textContent = 'word';
+            titleTextAfterBold.textContent = 'erbytes';
             break;
     }
 }
@@ -116,15 +119,11 @@ function addEventListeners() {
     // When player submits text input form, they submit the word as their answer
     playerForm.addEventListener('submit', submitAnswer);
     
-    // When reset button is clicked, entire game resets
-    resetButton.addEventListener('click', resetGame);
+    // When New Game button is clicked, entire game resets
+    newGameButton.addEventListener('click', resetGame);
 
     // When unusable prompt section is clicked, flash red and indicate off limits
     promptUnusable.addEventListener('click', instructUnusablePrompt);
-    
-    // *** LEAVE COMMENTED OUT *** // this works, but creates too many GET requests, and will lock us out of the API
-    // when user types in input field, prompt text will highlight if input makes a valid solution
-    // playerInput.addEventListener('input', autoHighlightPrompt)
 }
 
 // callback for when player submits an answer
@@ -168,6 +167,7 @@ function submitAnswer(e) {
     })
 }
 
+// test whether current player word guess is a word or not. Returns word entry or false
 function testSingleWord() {
     const testWord = selectedPromptText + playerInput.value;
     console.log('testing: ' + testWord);
@@ -185,23 +185,22 @@ function getWord(word) {
     .catch( error => console.log(error.message))
 }
 
+// puts each letter of the player's usable prompt in its own span,
 function formatPromptSpans() {
     // clear span HTML content
-    promptNeutralText.innerHTML = "";
-    promptDimText.innerHTML = "";
-    promptLitText.innerHTML = "";
+    promptUsable.innerHTML = "";
 
     for (let i = 0; i < availablePromptText.length; i++) {
         const span = document.createElement('span');
-        span.dataset.index
         span.textContent = availablePromptText[i];
         span.addEventListener('click', () => selectPromptLetters(i))
-        promptNeutralText.appendChild(span);
+        promptUsable.appendChild(span);
     }
 
     selectedPromptText = "";
 }
 
+// "select" which prompt letters player is using based off starting letter index (in usable prompt)
 function selectPromptLetters(i) {
     // if selected current starting letter, deselect
     if (selectedPromptText === availablePromptText.slice(i)) {
@@ -214,18 +213,21 @@ function selectPromptLetters(i) {
     }    
 }
 
+// set usable prompt text back to default font styling
 function removePromptHighlight() {
     for (let i = 0; i < availablePromptText.length; i++) {
-        promptNeutralText.children[i].className = "";
+        promptUsable.children[i].className = "";
     }
 }
 
+// highlight selected portion of prompt, dim unused portion
 function highlightPromptStartingAt(startIndex) {
     for (let i = 0; i < availablePromptText.length; i++) {
-        promptNeutralText.children[i].className = i < startIndex ? 'not-using' : 'using';
+        promptUsable.children[i].className = i < startIndex ? 'not-using' : 'using';
     }
 }
 
+// briefly apply '.alert' class to element to style, then remove
 function flashTextRed(element) {
     if (element.className === 'alert') {
         return;
@@ -236,6 +238,7 @@ function flashTextRed(element) {
 
 //#endregion
 
+
 //#region NOT IN USE
 
 // // WHY NOT IN USE: player prompt selection means only one word needs to be tested, not all possible from input
@@ -243,16 +246,16 @@ function flashTextRed(element) {
 // function testWord() {
 //     // declare an array to contain all fetch (GET) promises
 //     const promisesArray = [];
-    
+//    
 //     // test each possible combination of prompt letters and player input, starting with the second letter
 //     for (i = 0; i < availablePromptText.length; i++) {
 //         // get this word to test
 //         const testWord = availablePromptText.slice(i) + playerInput.value;
-        
+//        
 //         // add the Promise reference to the promises array
 //         promisesArray.push(getWord(testWord));
 //     }
-
+//
 //     // return the first (& therefore longest) existing (truthy) result from the returned words array
 //     return Promise.all(promisesArray)
 //     .then(returnedWords => {
@@ -261,10 +264,14 @@ function flashTextRed(element) {
 // }
 
 // // WHY NOT IN USE: makes too many Get Calls, hits API limit. Replaced with manual player prompt selection
+//
+// // when user types in input field, prompt text will highlight if input makes a valid solution
+// playerInput.addEventListener('input', autoHighlightPrompt)
+//
 // // automatically highlights portion of prompt that creates a valid solution with user input
 // function autoHighlightPrompt() {
 //     let promptText = availablePromptText
-
+//
 //     // if there is currently input from the player
 //     if (playerInput.value) {
 //         testWord()
@@ -276,12 +283,12 @@ function flashTextRed(element) {
 //                 let usedPrompt = wordEntry[0].word.slice(0, usedLength);
 //                 let unusedLength = availablePromptText.length - usedLength;
 //                 let unusedPrompt = availablePromptText.slice(0,unusedLength);
-
+//
 //                 // and assign to appropriate styled spans
 //                 promptNeutralText.textContent = "";
 //                 promptDimText.textContent = unusedPrompt;
 //                 promptLitText.textContent = usedPrompt;
-    
+//  
 //             // if input did not yield a valid entry in the API...
 //             } else {
 //                 // place all prompt text in second, greyed-out, span
@@ -290,7 +297,7 @@ function flashTextRed(element) {
 //                 promptLitText.textContent = "";
 //             }
 //         })
-
+//
 //     // if the input field is currently blank
 //     } else {
 //         // all prompt text in first, unstyled, span
@@ -311,16 +318,18 @@ function flashTextRed(element) {
 // ----------------------------------------------------------------------
 // ▼ (Type below this line) ▼
 
-
+// reset page for new game
 function resetGame() {
     // find random prompt word
     console.log('reset game');
 }
 
+// alert that prompt selection is unusable
 function instructUnusablePrompt() {
     flashTextRed(promptUnusable);
 }
 
+// retrieve score for word based on current selected prompt and input
 function getScoreForCurrentWord() {
     let promptPoints = selectedPromptText.length * pointsPerPromptLetter;
     let inputPoints = playerInput.value.length * pointsPerInputLetter;
