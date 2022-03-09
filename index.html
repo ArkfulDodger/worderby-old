@@ -6,9 +6,16 @@
         <script defer src="src/index.js"></script>
     </head>
     <body>
+
+        
         <div id="header">
             <h1><span id="title-1" class="unfocused"></span><span id="title-2" class="focused">word</span><span id="title-3" class="unfocused">erbytes</span></h1>
+            <div id="instructions" class="centered">
+                <p>Use the end of one word to start a new word</p>
+                <p>Steal more letters, get more points!</p>
+            </div>
         </div>
+
 
         <div id="play-area">
             <form id="player-form" autocomplete="off">
@@ -17,50 +24,52 @@
                 --><input id="player-input" type="text" spellcheck="false" placeholder="gerbread">
                 <!-- <input type="submit"> -->
             </form>
+            <div id="word-list">
+                <form id="tts-form">
+                    <p id="frankenword">begin</p>
+                    <button type="button" id="voice-toggle">Voice Off</button>
+                    <input type="submit" value="Read Word">
+                </form>
+            </div>
         </div>
 
-        <div id="word-list">
-            <form id="tts-form">
-                <p id="frankenword">begin</p>
-                <button type="button" id="voice-toggle">Voice Off</button>
-                <input type="submit" value="Read Word">
-            </form>
+
+        <div id="game-info">
+            <div id="new-game"><button id="new-game-button">New Game</button></div>
+            <div id="scorecards">
+                <div class="scorecard-container" class="centered">
+                    <h2 id="player-1-title">Player 1</h2>
+                    <ol id="player-1-score" class="scorecard">
+                        <li id="p1round1" class="rounds round1">1.</li>
+                        <li id="p1round2" class="rounds round2">2.</li>
+                        <li id="p1round3" class="rounds round3">3.</li>
+                        <li id="p1round4" class="rounds round4">4.</li>
+                        <li id="p1round5" class="rounds round5">5.</li>
+                        <li id="p1round6" class="rounds round6">6.</li>
+                        <li id="p1round7" class="rounds round7">7.</li>
+                        <li id="p1round8" class="rounds round8">8.</li>
+                        <li id="p1round9" class="rounds round9">9.</li>
+                        <li id="p1round10" class="rounds round10">10.</li>
+                    </ul>
+                </div>
+                <div class="scorecard-container" class="centered">
+                    <h2 id="player-2-title">Player 2</h2>
+                    <ol id="player-2-score" class="scorecard">
+                        <li id="p2round1" class="rounds round1">1.</li>
+                        <li id="p2round2" class="rounds round2">2.</li>
+                        <li id="p2round3" class="rounds round3">3.</li>
+                        <li id="p2round4" class="rounds round4">4.</li>
+                        <li id="p2round5" class="rounds round5">5.</li>
+                        <li id="p2round6" class="rounds round6">6.</li>
+                        <li id="p2round7" class="rounds round7">7.</li>
+                        <li id="p2round8" class="rounds round8">8.</li>
+                        <li id="p2round9" class="rounds round9">9.</li>
+                        <li id="p2round10" class="rounds round10">10.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <br><br>
 
-        <div id="new-game"><button id="new-game-button">New Game</button></div>
-
-        <div class="scorecard-container">
-            <h2 id="player-1-title">Player 1</h2>
-            <ul id="player-1-score" class="scorecard">
-                <li id="p1round1" class="rounds round1">1.</li>
-                <li id="p1round2" class="rounds round2">2.</li>
-                <li id="p1round3" class="rounds round3">3.</li>
-                <li id="p1round4" class="rounds round4">4.</li>
-                <li id="p1round5" class="rounds round5">5.</li>
-                <li id="p1round6" class="rounds round6">6.</li>
-                <li id="p1round7" class="rounds round7">7.</li>
-                <li id="p1round8" class="rounds round8">8.</li>
-                <li id="p1round9" class="rounds round9">9.</li>
-                <li id="p1round10" class="rounds round10">10.</li>
-            </ul>
-        </div>
-
-        <div class="scorecard-container">
-            <h2 id="player-2-title">Player 2</h2>
-            <ul id="player-2-score" class="scorecard">
-                <li id="p2round1" class="rounds round1">1.</li>
-                <li id="p2round2" class="rounds round2">2.</li>
-                <li id="p2round3" class="rounds round3">3.</li>
-                <li id="p2round4" class="rounds round4">4.</li>
-                <li id="p2round5" class="rounds round5">5.</li>
-                <li id="p2round6" class="rounds round6">6.</li>
-                <li id="p2round7" class="rounds round7">7.</li>
-                <li id="p2round8" class="rounds round8">8.</li>
-                <li id="p2round9" class="rounds round9">9.</li>
-                <li id="p2round10" class="rounds round10">10.</li>
-            </ul>
-        </div>
     </body>
 </html>
