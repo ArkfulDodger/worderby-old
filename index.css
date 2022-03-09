@@ -13,7 +13,8 @@ body {
 #header,
 #play-area,
 #frankenword,
-#new-game {
+#new-game,
+#word-list {
     text-align: center;
     
 }
@@ -93,10 +94,10 @@ body {
     
 }
 
-#player-1-score { 
+/* #player-1-score { 
     
         
-}
+} */
 
 #player-2-score {
     margin-left: 300px;

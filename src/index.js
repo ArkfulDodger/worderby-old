@@ -39,6 +39,7 @@ let selectedPromptText = "";
 
 // frankenword element
 const frankenword = document.getElementById('frankenword');
+const voiceToggleButton = document.getElementById('voice-toggle');
 
 // new game button
 const newGameButton = document.getElementById('new-game-button');
@@ -46,6 +47,12 @@ const newGameButton = document.getElementById('new-game-button');
 // game mechanics variables
 const pointsPerPromptLetter = 5;
 const pointsPerInputLetter = 1;
+let isVoiceActive = true;
+
+// TTS variables
+const synth = window.speechSynthesis
+const inputForm = document.querySelector('#tts-form');
+let voice;
 
 //#endregion
 
@@ -56,6 +63,8 @@ const pointsPerInputLetter = 1;
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
+
+getVoice();
 
 //#endregion
 
@@ -114,6 +123,12 @@ function addEventListeners() {
 
     // have document check for keyboard input
     document.addEventListener('keydown', processKeyboardInput)
+
+    // Read button reads frankenword
+    inputForm.addEventListener('submit', readFrankenword)
+
+    // toggle voice reading
+    voiceToggleButton.addEventListener('click', toggleVoiceActive)
 }
 
 // callback for when player submits an answer
@@ -151,6 +166,11 @@ function submitAnswer(e) {
 
             // remove placeholder
             playerInput.placeholder = "";
+
+            // read new word
+            if (isVoiceActive) {
+                readFrankenword();
+            }
 
         // if input did not yield a valid entry in the API
         } else {
@@ -263,6 +283,41 @@ function adjustPromptSelectionRight() {
     } else {
         let selectionStartIndex = availablePromptText.length - selectedPromptText.length + 1;
         selectPromptLetters(selectionStartIndex);
+    }
+}
+
+// get voice for TTS
+function getVoice() {
+    let voices = window.speechSynthesis.getVoices();
+    for (const voiceEntry of voices) {
+        if (voiceEntry.name === 'Daniel') {
+            voice = voiceEntry;
+        }
+    }
+
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = getVoice;
+    }
+}
+
+// have TTS voice read frankenword
+function readFrankenword() {
+    if (event) {
+        event.preventDefault();
+    }
+    const utterThis = new SpeechSynthesisUtterance(frankenword.textContent);
+    utterThis.voice = voice;
+    utterThis.pitch = 1;
+    utterThis.rate = 1;
+    synth.speak(utterThis);
+}
+
+// activate/deactivate auto-reading on submit
+function toggleVoiceActive() {
+    isVoiceActive = !isVoiceActive;
+    voiceToggleButton.textContent = isVoiceActive ? 'Voice Off' : 'Voice On';
+    if (isVoiceActive) {
+        readFrankenword();
     }
 }
 
