@@ -469,11 +469,11 @@ function player2TotalScore() {
 }
 
 // randomize starting word
-function randomWord() {
-    let randomWords= ["begin", "cat", "dog"];
+function wordRandomizer() {
+    const randomWords = ["begin", "cat", "dog"];
     const startingWord = randomWords[Math.floor(Math.random() * randomWords.length)];
-    
-
+    promptUnusable.textContent = startingWord.charAt(0);
+    promptUsable.textContent = startingWord.slice(1);
 }
 
 //#endregion
