@@ -39,6 +39,7 @@ const playerForm = document.getElementById('player-form');
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
+const submitButton = document.querySelector('#player-form [type="submit"]');
 let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 
@@ -138,6 +139,8 @@ function submitAnswer(e) {
         return;
     }
 
+    setFormDisabledTo(true);
+
     testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
@@ -164,6 +167,8 @@ function submitAnswer(e) {
         } else {
             alert('word not found, try again!')
         }
+
+        setFormDisabledTo(false);
     })
 }
 
@@ -335,6 +340,13 @@ function getScoreForCurrentWord() {
     let inputPoints = playerInput.value.length * pointsPerInputLetter;
 
     return promptPoints + inputPoints;
+}
+
+function setFormDisabledTo(bool) {
+    console.log('form disabled: ' + bool);
+
+    playerInput.disabled = bool;
+    submitButton.disabled = bool;
 }
 
 //#endregion
