@@ -36,6 +36,10 @@ const playerInput = document.getElementById('player-input');
 const submitButton = document.querySelector('#player-form [type="submit"]');
 let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
+const player1Score = document.getElementById('player-1-score')
+const player2Score = document.getElementById('player-2-score')
+let player1Total = document.getElementById('player-1-total')
+let player2Total = document.getElementById('player-2-total')
 
 // frankenword element
 const frankenword = document.getElementById('frankenword');
@@ -45,9 +49,10 @@ const voiceToggleButton = document.getElementById('voice-toggle');
 const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
-const pointsPerPromptLetter = 5;
+const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
 let isVoiceActive = true;
+let player = 2;
 
 // TTS variables
 const synth = window.speechSynthesis
@@ -149,8 +154,15 @@ function submitAnswer(e) {
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
+
+            // toggle player turn (IMPORTANT: order placement of this function affects output)
+            playerTurn();
+
             // score word
             console.log('Scored ' + getScoreForCurrentWord() + ' points');
+
+            // add score to player's total (IMPORTANT: order placement of this function affects output)
+            player === 1 ? player1TotalScore() : player2TotalScore();
 
             // add input to frankenword
             frankenword.textContent += playerInput.value;
@@ -161,6 +173,9 @@ function submitAnswer(e) {
             promptUnusable.textContent = newWord[0];
             formatPromptSpans();
 
+            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+            player === 1 ? player1Submit() : player2Submit();
+            
             // reset form
             playerForm.reset();
 
@@ -171,7 +186,7 @@ function submitAnswer(e) {
             if (isVoiceActive) {
                 readFrankenword();
             }
-
+            
         // if input did not yield a valid entry in the API
         } else {
             alert('word not found, try again!')
@@ -180,13 +195,15 @@ function submitAnswer(e) {
         setFormDisabledTo(false);
         playerInput.focus();
     })
+  
+       
 }
 
 // test whether current player word guess is a word or not. Returns word entry or false
 function testSingleWord() {
     const testWord = selectedPromptText + playerInput.value;
     console.log('testing: ' + testWord);
-
+    
     return getWord(testWord)
 }
 
@@ -416,6 +433,47 @@ function getScoreForCurrentWord() {
 
     return promptPoints + inputPoints;
 }
+// toggle player turn
+function playerTurn() {
+   player === 1 ? player = 2 : player = 1
+}
 
+// add player 1 word to player 1 scorecard
+function player1Submit() {
+    let player1Submit = document.createElement('li');
+    player1Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player1Submit.className = "player-1-submit";
+    player1Score.appendChild(player1Submit);
+}
+
+// add player 2 word to player 2 scorecard
+function player2Submit() {
+    let player2Submit = document.createElement('li');
+    player2Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player2Submit.className = "player-2-submit";
+    player2Score.appendChild(player2Submit);   
+}
+
+// add player 1 score to player 1 total
+function player1TotalScore() {
+    let totalNumber = parseInt(player1Total.textContent, 10);
+    let newScore = totalNumber + getScoreForCurrentWord();
+    player1Total.textContent = newScore.toString();
+}
+
+// add player 2 score to player 2 total
+function player2TotalScore() {
+    let totalNumber = parseInt(player2Total.textContent, 10);
+    let newScore = totalNumber + getScoreForCurrentWord();
+    player2Total.textContent = newScore.toString();
+}
+
+// randomize starting word
+function randomWord() {
+    let randomWords= ["begin", "cat", "dog"];
+    const startingWord = randomWords[Math.floor(Math.random() * randomWords.length)];
+    
+
+}
 
 //#endregion
