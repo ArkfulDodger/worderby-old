@@ -45,13 +45,13 @@ const voiceToggleButton = document.getElementById('voice-toggle');
 const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
-const pointsPerPromptLetter = 5;
+const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
-let isVoiceActive = true;
 
 // TTS variables
 const synth = window.speechSynthesis
 const inputForm = document.querySelector('#tts-form');
+let isVoiceActive = true;
 let voice;
 
 //#endregion
@@ -63,7 +63,7 @@ let voice;
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
-
+resizeInput();
 getVoice();
 
 //#endregion
@@ -129,6 +129,9 @@ function addEventListeners() {
 
     // toggle voice reading
     voiceToggleButton.addEventListener('click', toggleVoiceActive)
+
+    // dynamically resize input field according to text input
+    playerInput.addEventListener('input', resizeInput)
 }
 
 // callback for when player submits an answer
@@ -163,9 +166,8 @@ function submitAnswer(e) {
 
             // reset form
             playerForm.reset();
-
-            // remove placeholder
             playerInput.placeholder = "";
+            resizeInput();
 
             // read new word
             if (isVoiceActive) {
@@ -321,6 +323,13 @@ function toggleVoiceActive() {
     }
 }
 
+// resize input field to min size (incl placeholder) or exact sie of text
+function resizeInput() {
+    let minInputSize = playerInput.placeholder ? playerInput.placeholder.length : 7;
+    let inputSize = Math.max(playerInput.value.length, minInputSize);
+    playerInput.setAttribute('size', inputSize);
+}
+
 //#endregion
 
 
@@ -416,6 +425,7 @@ function getScoreForCurrentWord() {
 
     return promptPoints + inputPoints;
 }
+
 
 
 //#endregion

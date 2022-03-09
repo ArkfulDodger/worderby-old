@@ -1,8 +1,8 @@
 body {
     font-size: 16pt;
     font-family: Arial, sans-serif;
-    background-color: #ffefcd;
-    
+    background-color: rgb(255, 239, 204);
+    color:rgb(92, 1, 80);
 }
 
 /* #player-input {
@@ -37,7 +37,7 @@ body {
 
 .focused {
     font-weight: bold;
-    color: rgba(0, 52, 2, 0.897);
+    color: rgb(164, 0, 142)
 }
 
 .unfocused {
@@ -45,12 +45,12 @@ body {
 }
 
 .using {
-    color: rgba(0, 85, 3, 0.897);
+    color: rgb(164, 0, 142);
 }
 
 .not-using {
     font-weight: normal;
-    color: rgb(0,0,0,0.35);
+    color: rgba(125, 0, 108, 0.35);
 }
 
 #prompt-usable {
@@ -58,7 +58,7 @@ body {
 }
 
 #prompt-unusable {
-    color: rgb(0,0,0,0.35);
+    color: rgba(92, 63, 1, 0.35);
     transition: color 0.1s;
 }
 
@@ -71,9 +71,15 @@ body {
     font-weight: bold;
     outline: 0;
     border-width: 0 0 2px;
-    border-color: rgb(116, 64, 0);
+    border-color: rgb(92, 1, 80);
     padding: 0px;
     background-color: #ffefcd;
+    color:rgb(92, 1, 80);
+    /* width: 100px; */
+}
+
+::placeholder {
+    color:rgba(92, 63, 1, 0.35);
 }
 
 .scorecard-container {
