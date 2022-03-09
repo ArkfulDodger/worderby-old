@@ -141,7 +141,7 @@ body > div {
 
 /* The actual popup (appears on top) */
 .popup .popuptext {
-    visibility: visible;
+    visibility: hidden;
     width: 160px;
     background-color: rgba(85, 85, 85, 0.735);
     color: #fff;
@@ -153,6 +153,11 @@ body > div {
     bottom: 125%;
     left: 50%;
     margin-left: -80px;
+}
+
+.popuptext {
+    font-size: 16pt;
+    font-family: Arial, sans-serif;
 }
 
 /* Popup arrow */

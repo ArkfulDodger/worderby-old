@@ -30,6 +30,7 @@ const titleTextAfterBold = document.getElementById('title-3');
 
 // elements from player form (game area)
 const playerForm = document.getElementById('player-form');
+const controlsPopup = document.getElementById('controls-popup')
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -64,6 +65,7 @@ runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
+setPopupVisibleTo(true);
 resizeInput();
 getVoice();
 
@@ -133,6 +135,8 @@ function addEventListeners() {
 
     // dynamically resize input field according to text input
     playerInput.addEventListener('input', resizeInput)
+
+    controlsPopup.addEventListener('click', () => setPopupVisibleTo(false));
 }
 
 // callback for when player submits an answer
@@ -224,6 +228,7 @@ function selectPromptLetters(i = 0) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
     playerInput.focus();
+    setPopupVisibleTo(false);
 }
 
 // highlight selected portion of prompt, dim unused portion
@@ -321,6 +326,14 @@ function resizeInput() {
     let minInputSize = playerInput.placeholder ? playerInput.placeholder.length : 7;
     let inputSize = Math.max(playerInput.value.length, minInputSize);
     playerInput.setAttribute('size', inputSize);
+}
+
+function setPopupVisibleTo(bool) {
+    if (bool) {
+        controlsPopup.classList.contains('show') ? null : controlsPopup.classList.add('show');
+    } else {
+        controlsPopup.classList.contains('show') ? controlsPopup.classList.remove('show') : null;
+    }
 }
 
 //#endregion
