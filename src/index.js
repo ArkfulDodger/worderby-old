@@ -232,11 +232,13 @@ function flashTextRed(element) {
     setTimeout(() => {element.className = ""}, 100);
 }
 
+// set game form (input/submit) to be disabled or enabled
 function setFormDisabledTo(bool) {
     playerInput.disabled = bool;
     submitButton.disabled = bool;
 }
 
+// determine which key/keys have been pressed and enact response
 function processKeyboardInput(e) {
     if (e.key === 'ArrowLeft' && e.shiftKey) {
         adjustPromptSelectionLeft();
@@ -245,16 +247,16 @@ function processKeyboardInput(e) {
     }
 }
 
+// start prompt selection one index to the left (or cycle to last index)
 function adjustPromptSelectionLeft() {
     if (!selectedPromptText || selectedPromptText === availablePromptText) {
         selectPromptLetters(availablePromptText.length - 1);
     } else {
         let selectionStartIndex = availablePromptText.length - selectedPromptText.length - 1;
-        
         selectPromptLetters(selectionStartIndex);
     }
 }
-
+// start prompt selection one index to the right (or cycle to first index)
 function adjustPromptSelectionRight() {
     if (!selectedPromptText || selectedPromptText.length === 1) {
         selectPromptLetters(0);
