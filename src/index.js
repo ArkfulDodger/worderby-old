@@ -263,8 +263,10 @@ function setFormDisabledTo(bool) {
 // determine which key/keys have been pressed and enact response
 function processKeyboardInput(e) {
     if (e.key === 'ArrowLeft' && e.shiftKey) {
+        e.preventDefault();
         adjustPromptSelectionLeft();
     } else if (e.key === 'ArrowRight' && e.shiftKey) {
+        e.preventDefault();
         adjustPromptSelectionRight();
     }
 }
