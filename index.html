@@ -6,37 +6,55 @@
         <script defer src="src/index.js"></script>
     </head>
     <body>
+
+        
         <div id="header">
             <h1><span id="title-1" class="unfocused"></span><span id="title-2" class="focused">word</span><span id="title-3" class="unfocused">erbytes</span></h1>
+            <div id="instructions" class="centered">
+                <p>Use the end of one word to start a new word</p>
+                <p>The more letters you steal, the more points you get!</p>
+            </div>
         </div>
+
+
         <div id="play-area">
             <form id="player-form" autocomplete="off">
-                <span id="prompt-unusable">b</span><!--
-                --><span id="prompt-usable">egin</span><!--
+                <span id="prompt-unusable">b/</span><!--
+                --><span id="popup-container" class="popup"><!--
+                    --><span id="controls-popup" class="popuptext show">Shift ←/→</span><!--
+                    --><span id="prompt-usable">egin</span><!--
+                --></span><!--
                 --><input id="player-input" type="text" spellcheck="false" placeholder="gerbread">
-                <input type="submit">
+                <!-- <input type="submit"> -->
             </form>
+            <div id="word-list">
+                <form id="tts-form">
+                    <p id="frankenword">begin</p>
+                    <button type="button" id="voice-toggle">Voice Off</button>
+                    <input type="submit" value="Read Word">
+                </form>
+            </div>
         </div>
-        <div id="word-list">
-            <form id="tts-form">
-                <p id="frankenword">begin</p>
-                <button type="button" id="voice-toggle">Voice Off</button>
-                <input type="submit" value="Read Word">
-            </form>
+
+
+        <div id="game-info">
+            <div id="new-game"><button id="new-game-button">New Game</button></div>
+            <div id="scorecards">
+                <div class="scorecard-container">
+                    <h2 id="player-1-title">Player 1</h2>
+                    <div id="player-1-total">0</div>
+                    <ol id="player-1-score" class="scorecard">
+                    </ol>
+                </div>
+                <div class="scorecard-container">
+                    <h2 id="player-2-title">Player 2</h2>
+                    <div id="player-2-total">0</div>
+                    <ol id="player-2-score" class="scorecard">
+                    </ol>
+                </div>
+            </div>
         </div>
-        <br><br>
-        <div id="new-game"><button id="new-game-button">New Game</button></div>
-        <div class="scorecard-container">
-            <h2 id="player-1-title">Player 1</h2>
-            <div id="player-1-total">0</div>
-            <ol id="player-1-score" class="scorecard">
-            </ol>
-        </div>
-        <div class="scorecard-container">
-            <h2 id="player-2-title">Player 2</h2>
-            <div id="player-2-total">0</div>
-            <ol id="player-2-score" class="scorecard">
-            </ol>
-        </div>
+
+
     </body>
 </html>

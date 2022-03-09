@@ -30,6 +30,7 @@ const titleTextAfterBold = document.getElementById('title-3');
 
 // elements from player form (game area)
 const playerForm = document.getElementById('player-form');
+const controlsPopup = document.getElementById('controls-popup')
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -51,12 +52,12 @@ const newGameButton = document.getElementById('new-game-button');
 // game mechanics variables
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
-let isVoiceActive = true;
 let player = 2;
 
 // TTS variables
 const synth = window.speechSynthesis
 const inputForm = document.querySelector('#tts-form');
+let isVoiceActive = true;
 let voice;
 
 //#endregion
@@ -68,7 +69,9 @@ let voice;
 runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
-
+selectPromptLetters();
+setPopupVisibleTo(true);
+resizeInput();
 getVoice();
 
 //#endregion
@@ -134,6 +137,11 @@ function addEventListeners() {
 
     // toggle voice reading
     voiceToggleButton.addEventListener('click', toggleVoiceActive)
+
+    // dynamically resize input field according to text input
+    playerInput.addEventListener('input', resizeInput)
+
+    controlsPopup.addEventListener('click', () => setPopupVisibleTo(false));
 }
 
 // callback for when player submits an answer
@@ -170,17 +178,17 @@ function submitAnswer(e) {
             // set played word as new prompt
             let newWord = wordEntry[0].word;
             availablePromptText = newWord.slice(1);
-            promptUnusable.textContent = newWord[0];
+            promptUnusable.textContent = newWord[0] + '/';
             formatPromptSpans();
+            selectPromptLetters();
 
             // add new word to scorecard (IMPORTANT: order placement of this function affects output)
             player === 1 ? player1Submit() : player2Submit();
             
             // reset form
             playerForm.reset();
-
-            // remove placeholder
             playerInput.placeholder = "";
+            resizeInput();
 
             // read new word
             if (isVoiceActive) {
@@ -233,24 +241,11 @@ function formatPromptSpans() {
 }
 
 // "select" which prompt letters player is using based off starting letter index (in usable prompt)
-function selectPromptLetters(i) {
-    // if selected current starting letter, deselect
-    if (selectedPromptText === availablePromptText.slice(i)) {
-        deselectPromptLetters();
-    } else {
-        selectedPromptText = availablePromptText.slice(i);
-        highlightPromptStartingAt(i);
-        playerInput.focus();
-    }    
-}
-
-// set usable prompt text back to default font styling
-function deselectPromptLetters() {
-    selectedPromptText = "";
-
-    for (let i = 0; i < availablePromptText.length; i++) {
-        promptUsable.children[i].className = "";
-    }
+function selectPromptLetters(i = 0) {
+    selectedPromptText = availablePromptText.slice(i);
+    highlightPromptStartingAt(i);
+    playerInput.focus();
+    setPopupVisibleTo(false);
 }
 
 // highlight selected portion of prompt, dim unused portion
@@ -272,14 +267,18 @@ function flashTextRed(element) {
 // set game form (input/submit) to be disabled or enabled
 function setFormDisabledTo(bool) {
     playerInput.disabled = bool;
-    submitButton.disabled = bool;
+    if (submitButton) {
+        submitButton.disabled = bool;
+    }
 }
 
 // determine which key/keys have been pressed and enact response
 function processKeyboardInput(e) {
     if (e.key === 'ArrowLeft' && e.shiftKey) {
+        e.preventDefault();
         adjustPromptSelectionLeft();
     } else if (e.key === 'ArrowRight' && e.shiftKey) {
+        e.preventDefault();
         adjustPromptSelectionRight();
     }
 }
@@ -293,6 +292,7 @@ function adjustPromptSelectionLeft() {
         selectPromptLetters(selectionStartIndex);
     }
 }
+
 // start prompt selection one index to the right (or cycle to first index)
 function adjustPromptSelectionRight() {
     if (!selectedPromptText || selectedPromptText.length === 1) {
@@ -338,11 +338,37 @@ function toggleVoiceActive() {
     }
 }
 
+// resize input field to min size (incl placeholder) or exact sie of text
+function resizeInput() {
+    let minInputSize = playerInput.placeholder ? playerInput.placeholder.length : 7;
+    let inputSize = Math.max(playerInput.value.length, minInputSize);
+    playerInput.setAttribute('size', inputSize);
+}
+
+function setPopupVisibleTo(bool) {
+    if (bool) {
+        controlsPopup.classList.contains('show') ? null : controlsPopup.classList.add('show');
+    } else {
+        controlsPopup.classList.contains('show') ? controlsPopup.classList.remove('show') : null;
+    }
+}
+
 //#endregion
 
 
 //#region NOT IN USE ----------------------------------------------------
 //-----------------------------------------------------------------------
+
+
+// WHY NOT IN USE: no longer allowing total deselect of prompt
+// // set usable prompt text back to default font styling
+// function deselectPromptLetters() {
+//     selectedPromptText = "";
+
+//     for (let i = 0; i < availablePromptText.length; i++) {
+//         promptUsable.children[i].className = "";
+//     }
+// }
 
 // // WHY NOT IN USE: player prompt selection means only one word needs to be tested, not all possible from input
 // // test player's answer (returns dictionary entry or alerts to try again)
