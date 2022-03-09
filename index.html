@@ -12,7 +12,7 @@
             <h1><span id="title-1" class="unfocused"></span><span id="title-2" class="focused">word</span><span id="title-3" class="unfocused">erbytes</span></h1>
             <div id="instructions" class="centered">
                 <p>Use the end of one word to start a new word</p>
-                <p>Steal more letters, get more points!</p>
+                <p>The more letters you steal, the more points you get!</p>
             </div>
         </div>
 
@@ -20,7 +20,10 @@
         <div id="play-area">
             <form id="player-form" autocomplete="off">
                 <span id="prompt-unusable">b/</span><!--
-                --><span id="prompt-usable">egin</span><!--
+                --><span id="popup-container" class="popup"><!--
+                    --><span id="myPopup" class="popuptext">Shift ←/→</span><!--
+                    --><span id="prompt-usable">egin</span><!--
+                --></span><!--
                 --><input id="player-input" type="text" spellcheck="false" placeholder="gerbread">
                 <!-- <input type="submit"> -->
             </form>
