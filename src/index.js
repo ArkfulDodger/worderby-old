@@ -444,7 +444,6 @@ function setPopupVisibleTo(bool) {
 //-----------------------------------------------------------------------
 // reset page for new game
 function resetGame() {
-    // find random prompt word
     console.log('reset game');
     resetScorecards();
     wordRandomizer();
