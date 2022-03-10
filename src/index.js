@@ -550,15 +550,15 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
 
 // clears player scorecards and score totals upon clicking new game button
 
-    function resetScorecards() {
-        while (player1Score.hasChildNodes()) {
-            player1Score.removeChild(player1Score.firstChild);
-        }
-        while (player2Score.hasChildNodes()) {
-            player2Score.removeChild(player2Score.firstChild);
-        }
-        player1Total.textContent = '0';
-        player2Total.textContent = '0';
+function resetScorecards() {
+    while (player1Score.hasChildNodes()) {
+        player1Score.removeChild(player1Score.firstChild);
     }
+    while (player2Score.hasChildNodes()) {
+        player2Score.removeChild(player2Score.firstChild);
+    }
+    player1Total.textContent = '0';
+    player2Total.textContent = '0';
+}
 
 //#endregion
