@@ -75,6 +75,7 @@ selectPromptLetters();
 setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
+displayOverlay();
 
 //#endregion
 
@@ -341,12 +342,50 @@ function resizeInput() {
     playerInput.setAttribute('size', inputSize);
 }
 
+// set the popup message span to 
 function setPopupVisibleTo(bool) {
     if (bool) {
         popup.classList.contains('show') ? null : popup.classList.add('show');
     } else {
         popup.classList.contains('show') ? popup.classList.remove('show') : null;
     }
+}
+
+// display popup on screen
+function displayPopup(popupType, rejectReason = 'word could not be played') {
+    let container;
+    let message;
+    let timeoutDuration;
+
+    switch (popupType) {
+        case 'controls':
+            container = controlsPopupContainer;
+            message = 'press Shift ←/→'
+            break;
+        case 'unusablePrompt':
+            container = promptUnusable;
+            message = 'cannot use first letter!'
+            timeoutDuration = 3;
+            break;
+        case 'wordRejected':
+            container = promptAndInputContainer;
+            message = rejectReason;
+            timeoutDuration = 5;
+            break;
+        default:
+            console.error('tried to display unlited popup');
+            return;
+    }
+
+    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        return;
+    }
+
+    clearTimeout(popupTimeout);
+    popup.textContent = message;
+    container.appendChild(popup);
+    setPopupVisibleTo(true);
+    timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
 }
 
 //#endregion
@@ -499,41 +538,10 @@ function wordRandomizer() {
     promptUsable.textContent = startingWord.slice(1);
 }
 
-// display popup on screen
-function displayPopup(popupType, rejectReason = 'word could not be played') {
-    let container;
-    let message;
-    let timeoutDuration;
-
-    switch (popupType) {
-        case 'controls':
-            container = controlsPopupContainer;
-            message = 'press Shift ←/→'
-            break;
-        case 'unusablePrompt':
-            container = promptUnusable;
-            message = 'cannot use first letter!'
-            timeoutDuration = 3;
-            break;
-        case 'wordRejected':
-            container = promptAndInputContainer;
-            message = rejectReason;
-            timeoutDuration = 5;
-            break;
-        default:
-            console.error('tried to display unlited popup');
-            return;
-    }
-
-    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
-        return;
-    }
-
-    clearTimeout(popupTimeout);
-    popup.textContent = message;
-    container.appendChild(popup);
-    setPopupVisibleTo(true);
-    timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
+function displayOverlay() {
+    const div = document.createElement('div');
+    div.id = 'overlay';
+    document.body.appendChild(div);
 }
 
 //#endregion
