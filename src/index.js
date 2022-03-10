@@ -540,25 +540,32 @@ function wordRandomizer() {
 }
 
 function displayOverlay(type) {
-    const div = document.createElement('div');
-    div.id = 'overlay';
-    addContentToOverlay(div, type);
-    document.body.appendChild(div);
+    const overlayDiv = document.getElementById('overlay') ||  document.createElement('div');
+    overlayDiv.id = 'overlay';
+    overlayDiv.style.display = 'block';
+    addContentToOverlay(overlayDiv, type);
+    document.body.appendChild(overlayDiv);
+}
+
+function hideOverlay() {
+    const overlayDiv = document.getElementById('overlay');
+    overlayDiv ? overlayDiv.style.display = 'none' : null;
 }
 
 function addContentToOverlay(overlay, type) {
-    const content = [];
-    switch (type) {
-        case gameOver:
-            
-            break;
-    
-        default:
-            break;
-    }
+    const h1 = document.createElement('h1');
+    h1.textContent = `Player ${player1Points > player2Points ? '1' : '2'} Wins!`;
+    const h2 = document.createElement('h2');
+    h2.textContent = 'Final Scores:';
+    const finalScores = document.getElementById('scorecards').cloneNode(true);
+    removeAllIds(finalScores);
 
-    document.createElement('h1');
-    h1.textContent = "Congratulations Player "
+    overlay.append(h1, h2, finalScores);
+}
+
+function removeAllIds(node) {
+    node.id ? node.removeAttribute('id') : null;
+    node.children ? [...node.children].forEach(child => removeAllIds(child)) : null;
 }
 
 //#endregion
