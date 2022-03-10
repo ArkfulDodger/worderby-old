@@ -286,11 +286,12 @@ div#header {
     max-height: 500px;
     border: 5px ridge rgb(176, 120, 0);
     border-radius: 20px;
+    box-shadow: black 6px 8px 20px;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     margin: auto auto;
-    background-color: rgba(0, 0, 0, 0.913);
+    background-color: rgba(0, 0, 0, 0.93);
     z-index: 2;
 }

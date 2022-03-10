@@ -41,8 +41,9 @@ let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 const player1Score = document.getElementById('player-1-score')
 const player2Score = document.getElementById('player-2-score')
-let player1Total = document.getElementById('player-1-total')
-let player2Total = document.getElementById('player-2-total')
+const player1Total = document.getElementById('player-1-total')
+const player2Total = document.getElementById('player-2-total')
+
 
 // frankenword element
 const frankenword = document.getElementById('frankenword');
@@ -52,6 +53,8 @@ const voiceToggleButton = document.getElementById('voice-toggle');
 const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
+let player1Points = 0;
+let player2Points = 0;
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
 let player = 2;
@@ -75,7 +78,7 @@ selectPromptLetters();
 setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
-displayOverlay();
+// displayOverlay();
 
 //#endregion
 
@@ -518,16 +521,14 @@ function player2Submit() {
 
 // add player 1 score to player 1 total
 function player1TotalScore() {
-    let totalNumber = parseInt(player1Total.textContent, 10);
-    let newScore = totalNumber + getScoreForCurrentWord();
-    player1Total.textContent = newScore.toString();
+    player1Points += getScoreForCurrentWord();
+    player1Total.textContent = player1Points.toString();
 }
 
 // add player 2 score to player 2 total
 function player2TotalScore() {
-    let totalNumber = parseInt(player2Total.textContent, 10);
-    let newScore = totalNumber + getScoreForCurrentWord();
-    player2Total.textContent = newScore.toString();
+    player2Points += getScoreForCurrentWord();
+    player2Total.textContent = player2Points.toString();
 }
 
 // randomize starting word
@@ -538,10 +539,26 @@ function wordRandomizer() {
     promptUsable.textContent = startingWord.slice(1);
 }
 
-function displayOverlay() {
+function displayOverlay(type) {
     const div = document.createElement('div');
     div.id = 'overlay';
+    addContentToOverlay(div, type);
     document.body.appendChild(div);
+}
+
+function addContentToOverlay(overlay, type) {
+    const content = [];
+    switch (type) {
+        case gameOver:
+            
+            break;
+    
+        default:
+            break;
+    }
+
+    document.createElement('h1');
+    h1.textContent = "Congratulations Player "
 }
 
 //#endregion
