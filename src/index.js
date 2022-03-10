@@ -41,8 +41,9 @@ let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 const player1Score = document.getElementById('player-1-score')
 const player2Score = document.getElementById('player-2-score')
-let player1Total = document.getElementById('player-1-total')
-let player2Total = document.getElementById('player-2-total')
+const player1Total = document.getElementById('player-1-total')
+const player2Total = document.getElementById('player-2-total')
+
 
 // frankenword element
 const frankenword = document.getElementById('frankenword');
@@ -52,9 +53,13 @@ const voiceToggleButton = document.getElementById('voice-toggle');
 const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
+let round = 1;
+const roundLimit = 5;
+let player1Points = 0;
+let player2Points = 0;
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
-let player = 2;
+let currentPlayer = 1;
 
 // TTS variables
 const synth = window.speechSynthesis
@@ -71,10 +76,10 @@ wordRandomizer();
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
-// setTimeout(() => setPopupVisibleTo(true), 1000);
 setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
+// displayOverlay();
 
 
 //#endregion
@@ -162,16 +167,12 @@ function submitAnswer(e) {
     testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
-        if (wordEntry) {
-
-            // toggle player turn (IMPORTANT: order placement of this function affects output)
-            playerTurn();
-
-            // score word
-            console.log('Scored ' + getScoreForCurrentWord() + ' points');
-
+        if (wordEntry) {            
             // add score to player's total (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1TotalScore() : player2TotalScore();
+            currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+
+            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+            currentPlayer === 1 ? player1Submit() : player2Submit();
 
             // add new word to scorecard (IMPORTANT: order placement of this function affects output)
             player === 1 ? player1Submit(wordEntry[0].word) : player2Submit(wordEntry[0].word);
@@ -181,23 +182,21 @@ function submitAnswer(e) {
 
             // set played word as new prompt
             let newWord = wordEntry[0].word;
-            availablePromptText = newWord.slice(1);
             promptUnusable.textContent = newWord[0];
+            availablePromptText = newWord.slice(1);
             formatPromptSpans();
             selectPromptLetters();
-
-            
             
             // reset form
             playerForm.reset();
             playerInput.placeholder = "";
             resizeInput();
-
-            // read new word
-            if (isVoiceActive) {
-                readFrankenword();
-            }
             
+            // read new word
+            isVoiceActive ? readFrankenword() : null;
+            
+            // toggle player turn (IMPORTANT: order placement of this function affects output)
+            cyclePlayerTurn();
         // if input did not yield a valid entry in the API
         } else {
             displayPopup('wordRejected', 'word not found, try again!');
@@ -333,10 +332,8 @@ function readFrankenword() {
 // activate/deactivate auto-reading on submit
 function toggleVoiceActive() {
     isVoiceActive = !isVoiceActive;
-    voiceToggleButton.textContent = isVoiceActive ? 'Voice Off' : 'Voice On';
-    if (isVoiceActive) {
-        readFrankenword();
-    }
+    voiceToggleButton.textContent = isVoiceActive ? 'Voice On' : 'Voice Off';
+    isVoiceActive ? voiceToggleButton.classList.add('engaged') : voiceToggleButton.classList.remove('engaged');
 }
 
 // resize input field to min size (incl placeholder) or exact sie of text
@@ -346,12 +343,72 @@ function resizeInput() {
     playerInput.setAttribute('size', inputSize);
 }
 
+// set the popup message span to 
 function setPopupVisibleTo(bool) {
     if (bool) {
         popup.classList.contains('show') ? null : popup.classList.add('show');
     } else {
         popup.classList.contains('show') ? popup.classList.remove('show') : null;
     }
+}
+
+// display popup on screen
+function displayPopup(popupType, rejectReason = 'word could not be played') {
+    let container;
+    let message;
+    let timeoutDuration;
+
+    switch (popupType) {
+        case 'controls':
+            container = controlsPopupContainer;
+            message = 'press Shift ←/→'
+            break;
+        case 'unusablePrompt':
+            container = promptUnusable;
+            message = 'cannot use first letter!'
+            timeoutDuration = 5;
+            break;
+        case 'wordRejected':
+            container = promptAndInputContainer;
+            message = rejectReason;
+            timeoutDuration = 7;
+            break;
+        default:
+            console.error('tried to display unlited popup');
+            return;
+    }
+
+    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        return;
+    }
+
+    clearTimeout(popupTimeout);
+    popup.textContent = message;
+    container.appendChild(popup);
+    setPopupVisibleTo(true);
+    timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
+}
+
+// display overlay of [type] to screen (create if not already existant)
+function displayOverlay(type) {
+    const overlayDiv = document.getElementById('overlay') ||  document.createElement('div');
+    overlayDiv.id = 'overlay';
+    overlayDiv.style.display = 'block';
+    addContentToOverlay(overlayDiv, type);
+    document.body.appendChild(overlayDiv);
+}
+
+// hide screen overlay
+function hideOverlay() {
+    const overlayDiv = document.getElementById('overlay');
+    overlayDiv ? overlayDiv.style.display = 'none' : null;
+    overlayDiv ? overlayDiv.innerHTML = "" : null;
+}
+
+// remove all ids from object and children (for use after cloning a node)
+function removeAllIds(node) {
+    node.id ? node.removeAttribute('id') : null;
+    node.children ? [...node.children].forEach(child => removeAllIds(child)) : null;
 }
 
 //#endregion
@@ -464,15 +521,21 @@ function getScoreForCurrentWord() {
 
     return promptPoints + inputPoints;
 }
-// toggle player turn
-function playerTurn() {
-   player === 1 ? player = 2 : player = 1
+// cycle player turn
+function cyclePlayerTurn() {
+    currentPlayer === 1 ? currentPlayer = 2 : currentPlayer = 1
+    currentPlayer === 1 ? cycleGameRound() : null;
+}
+
+// cycle game round
+function cycleGameRound() {
+    round < roundLimit ? round++ : displayOverlay('gameOver');    
 }
 
 // add player 1 word to player 1 scorecard
 function player1Submit(wordEntry) {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = `${wordEntry} - ${getScoreForCurrentWord()} points`;
+    player1Submit.textContent = selectedPromptText + playerInput.value;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
     console.log(wordEntry[0].word)
@@ -481,23 +544,21 @@ function player1Submit(wordEntry) {
 // add player 2 word to player 2 scorecard
 function player2Submit(wordEntry) {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = `${wordEntry} - ${getScoreForCurrentWord()} points`;
+    player2Submit.textContent = selectedPromptText + playerInput.value;
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
 
 // add player 1 score to player 1 total
 function player1TotalScore() {
-    let totalNumber = parseInt(player1Total.textContent, 10);
-    let newScore = totalNumber + getScoreForCurrentWord();
-    player1Total.textContent = newScore.toString();
+    player1Points += getScoreForCurrentWord();
+    player1Total.textContent = player1Points.toString();
 }
 
 // add player 2 score to player 2 total
 function player2TotalScore() {
-    let totalNumber = parseInt(player2Total.textContent, 10);
-    let newScore = totalNumber + getScoreForCurrentWord();
-    player2Total.textContent = newScore.toString();
+    player2Points += getScoreForCurrentWord();
+    player2Total.textContent = player2Points.toString();
 }
 
 // randomize starting word
@@ -510,41 +571,37 @@ function wordRandomizer() {
     frankenword.textContent = startingWord
 }
 
-// display popup on screen
-function displayPopup(popupType, rejectReason = 'word could not be played') {
-    let container;
-    let message;
-    let timeoutDuration;
+// populate content to a given overlay based on type
+function addContentToOverlay(overlay, type) {
+    let h1 = document.createElement('h1');;
+    let button = document.createElement('button');;
 
-    switch (popupType) {
-        case 'controls':
-            container = controlsPopupContainer;
-            message = 'press Shift ←/→'
+    switch (type) {
+        case 'gameOver':
+            let worderby = document.createElement('div');
+            let h2 = document.createElement('h2');
+            let finalScores = document.getElementById('scorecards').cloneNode(true);
+
+            h1.textContent = `Player ${player1Points > player2Points ? '1' : '2'} Wins!`;
+            worderby.classList.add('worderby');
+            worderby.textContent = frankenword.textContent;
+            worderby.addEventListener('click', readFrankenword);
+            button.textContent = 'Start New Game';
+            button.addEventListener('click', resetGame);
+            h2.textContent = 'Final Scores:';
+            removeAllIds(finalScores);
+
+            overlay.append(h1, worderby, button, h2, finalScores);
             break;
-        case 'unusablePrompt':
-            container = promptUnusable;
-            message = 'cannot use first letter!'
-            timeoutDuration = 3;
-            break;
-        case 'wordRejected':
-            container = promptAndInputContainer;
-            message = rejectReason;
-            timeoutDuration = 5;
-            break;
+    
         default:
-            console.error('tried to display unlited popup');
-            return;
-    }
+            h1.textContent = 'Pause'
+            button.textContent = 'Back to Game';
+            button.addEventListener('click', hideOverlay);
 
-    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
-        return;
+            overlay.append(h1, button);
+            break;
     }
-
-    clearTimeout(popupTimeout);
-    popup.textContent = message;
-    container.appendChild(popup);
-    setPopupVisibleTo(true);
-    timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
 }
 
 // clears player scorecards and score totals upon clicking new game button
