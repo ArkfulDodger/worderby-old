@@ -385,6 +385,28 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
     timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
 }
 
+// display overlay of [type] to screen (create if not already existant)
+function displayOverlay(type) {
+    const overlayDiv = document.getElementById('overlay') ||  document.createElement('div');
+    overlayDiv.id = 'overlay';
+    overlayDiv.style.display = 'block';
+    addContentToOverlay(overlayDiv, type);
+    document.body.appendChild(overlayDiv);
+}
+
+// hide screen overlay
+function hideOverlay() {
+    const overlayDiv = document.getElementById('overlay');
+    overlayDiv ? overlayDiv.style.display = 'none' : null;
+    overlayDiv ? overlayDiv.innerHTML = "" : null;
+}
+
+// remove all ids from object and children (for use after cloning a node)
+function removeAllIds(node) {
+    node.id ? node.removeAttribute('id') : null;
+    node.children ? [...node.children].forEach(child => removeAllIds(child)) : null;
+}
+
 //#endregion
 
 
@@ -539,20 +561,7 @@ function wordRandomizer() {
     promptUsable.textContent = startingWord.slice(1);
 }
 
-function displayOverlay(type) {
-    const overlayDiv = document.getElementById('overlay') ||  document.createElement('div');
-    overlayDiv.id = 'overlay';
-    overlayDiv.style.display = 'block';
-    addContentToOverlay(overlayDiv, type);
-    document.body.appendChild(overlayDiv);
-}
-
-function hideOverlay() {
-    const overlayDiv = document.getElementById('overlay');
-    overlayDiv ? overlayDiv.style.display = 'none' : null;
-    overlayDiv ? overlayDiv.innerHTML = "" : null;
-}
-
+// populate content to a given overlay based on type
 function addContentToOverlay(overlay, type) {
     let h1 = document.createElement('h1');;
     let button = document.createElement('button');;
@@ -579,11 +588,6 @@ function addContentToOverlay(overlay, type) {
             overlay.append(h1, button);
             break;
     }
-}
-
-function removeAllIds(node) {
-    node.id ? node.removeAttribute('id') : null;
-    node.children ? [...node.children].forEach(child => removeAllIds(child)) : null;
 }
 
 //#endregion
