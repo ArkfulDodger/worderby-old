@@ -91,29 +91,29 @@ function cycleTitle() {
         case 'word':
             titleTextBeforeBold.textContent = 'w';
             titleTextBold.textContent = 'order';
-            titleTextAfterBold.textContent = 'bytes';
+            titleTextAfterBold.textContent = 'by';
             break;
         case 'order':
             titleTextBeforeBold.textContent = 'wor';
             titleTextBold.textContent = 'derby';
-            titleTextAfterBold.textContent = 'tes';
-            break;
-        case 'derby':
-            titleTextBeforeBold.textContent = 'worder';
-            titleTextBold.textContent = 'bytes';
             titleTextAfterBold.textContent = '';
             break;
-        case 'bytes':
+        case 'derby':
             titleTextBeforeBold.textContent = '';
             titleTextBold.textContent = 'word';
-            titleTextAfterBold.textContent = 'erbytes';
+            titleTextAfterBold.textContent = 'erby';
             break;
+        // case 'bytes':
+        //     titleTextBeforeBold.textContent = '';
+        //     titleTextBold.textContent = 'word';
+        //     titleTextAfterBold.textContent = 'erbytes';
+        //     break;
         
         default:
             console.error('title text cycle broken')
             titleTextBeforeBold.textContent = '';
             titleTextBold.textContent = 'word';
-            titleTextAfterBold.textContent = 'erbytes';
+            titleTextAfterBold.textContent = 'erby';
             break;
     }
 }
@@ -178,7 +178,7 @@ function submitAnswer(e) {
             // set played word as new prompt
             let newWord = wordEntry[0].word;
             availablePromptText = newWord.slice(1);
-            promptUnusable.textContent = newWord[0] + '/';
+            promptUnusable.textContent = newWord[0];
             formatPromptSpans();
             selectPromptLetters();
 
