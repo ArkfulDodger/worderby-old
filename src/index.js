@@ -501,7 +501,10 @@ function resetGame() {
     resetScorecards();
     wordRandomizer();
     formatPromptSpans();
-    player = 2;
+    selectPromptLetters();
+    resizeInput();
+    hideOverlay();
+    player = 1;
 }
 
 // alert that prompt selection is unusable
