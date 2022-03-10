@@ -22,7 +22,6 @@
 //#region GLOBAL VARIABLES ----------------------------------------------
 //-----------------------------------------------------------------------
 
-
 // elements from title animation
 const titleTextBeforeBold = document.getElementById('title-1');
 const titleTextBold = document.getElementById('title-2');
@@ -30,7 +29,10 @@ const titleTextAfterBold = document.getElementById('title-3');
 
 // elements from player form (game area)
 const playerForm = document.getElementById('player-form');
-const popup = document.getElementById('controls-popup')
+const promptAndInputContainer = document.getElementById('prompt-and-input');
+const controlsPopupContainer = document.getElementById('controls-popup-container');
+let popupTimeout;
+const popup = document.getElementById('popup')
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -69,7 +71,8 @@ runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
-setTimeout(() => setPopupVisibleTo(true), 1000);
+// setTimeout(() => setPopupVisibleTo(true), 1000);
+setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
 
@@ -149,7 +152,7 @@ function submitAnswer(e) {
         alert('must select at least one letter from prompt to begin your word!');
         return;
     } else if (!playerInput.value) {
-        alert('must enter at least one letter to play a word!');
+        displayPopup('wordRejected', 'must enter at least one letter to play a word!')
         return;
     }
 
@@ -194,14 +197,12 @@ function submitAnswer(e) {
             
         // if input did not yield a valid entry in the API
         } else {
-            alert('word not found, try again!')
+            displayPopup('wordRejected', 'word not found, try again!');
         }
 
         setFormDisabledTo(false);
         playerInput.focus();
     })
-  
-       
 }
 
 // test whether current player word guess is a word or not. Returns word entry or false
@@ -254,11 +255,11 @@ function highlightPromptStartingAt(startIndex) {
 
 // briefly apply '.alert' class to element to style, then remove
 function flashTextRed(element) {
-    if (element.className === 'alert') {
+    if (element.classList.contains('alert')) {
         return;
     }
-    element.className = 'alert';
-    setTimeout(() => {element.className = ""}, 100);
+    element.classList.add('alert');
+    setTimeout(() => {element.classList.remove('alert')}, 100);
 }
 
 // set game form (input/submit) to be disabled or enabled
@@ -447,6 +448,7 @@ function resetGame() {
 // alert that prompt selection is unusable
 function instructUnusablePrompt() {
     flashTextRed(promptUnusable);
+    displayPopup('unusablePrompt');
 }
 
 // retrieve score for word based on current selected prompt and input
@@ -497,6 +499,43 @@ function wordRandomizer() {
     const startingWord = randomWords[Math.floor(Math.random() * randomWords.length)];
     promptUnusable.textContent = startingWord.charAt(0);
     promptUsable.textContent = startingWord.slice(1);
+}
+
+// display popup on screen
+function displayPopup(popupType, rejectReason = 'word could not be played') {
+    let container;
+    let message;
+    let timeoutDuration;
+
+    switch (popupType) {
+        case 'controls':
+            container = controlsPopupContainer;
+            message = 'press Shift ←/→'
+            break;
+        case 'unusablePrompt':
+            container = promptUnusable;
+            message = 'cannot use first letter!'
+            timeoutDuration = 3;
+            break;
+        case 'wordRejected':
+            container = promptAndInputContainer;
+            message = rejectReason;
+            timeoutDuration = 5;
+            break;
+        default:
+            console.error('tried to display unlited popup');
+            return;
+    }
+
+    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        return;
+    }
+
+    clearTimeout(popupTimeout);
+    popup.textContent = message;
+    container.appendChild(popup);
+    setPopupVisibleTo(true);
+    timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
 }
 
 //#endregion
