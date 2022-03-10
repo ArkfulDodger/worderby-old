@@ -74,7 +74,6 @@ runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
-// setTimeout(() => setPopupVisibleTo(true), 1000);
 setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
@@ -550,6 +549,7 @@ function displayOverlay(type) {
 function hideOverlay() {
     const overlayDiv = document.getElementById('overlay');
     overlayDiv ? overlayDiv.style.display = 'none' : null;
+    overlayDiv.innerHTML = "";
 }
 
 function addContentToOverlay(overlay, type) {
