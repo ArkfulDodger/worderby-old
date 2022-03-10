@@ -174,7 +174,7 @@ function submitAnswer(e) {
             player === 1 ? player1TotalScore() : player2TotalScore();
 
             // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1Submit(wordEntry) : player2Submit(wordEntry);
+            player === 1 ? player1Submit(wordEntry[0].word) : player2Submit(wordEntry[0].word);
 
             // add input to frankenword
             frankenword.textContent += playerInput.value;
@@ -473,7 +473,7 @@ function playerTurn() {
 // add player 1 word to player 1 scorecard
 function player1Submit(wordEntry) {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = `${wordEntry[0].word} - ${getScoreForCurrentWord()} points`;
+    player1Submit.textContent = `${wordEntry} - ${getScoreForCurrentWord()} points`;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
     console.log(wordEntry[0].word)
@@ -482,7 +482,7 @@ function player1Submit(wordEntry) {
 // add player 2 word to player 2 scorecard
 function player2Submit(wordEntry) {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = `${wordEntry[0].word} - ${getScoreForCurrentWord()} points`;
+    player2Submit.textContent = `${wordEntry} - ${getScoreForCurrentWord()} points`;
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
@@ -557,7 +557,6 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
         while (player2Score.hasChildNodes()) {
             player2Score.removeChild(player2Score.firstChild);
         }
-
         player1Total.textContent = '0';
         player2Total.textContent = '0';
     }
