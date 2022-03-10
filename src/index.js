@@ -367,7 +367,7 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
         case 'unusablePrompt':
             container = promptUnusable;
             message = 'cannot use first letter!'
-            timeoutDuration = 3;
+            timeoutDuration = 5;
             break;
         case 'wordRejected':
             container = promptAndInputContainer;
