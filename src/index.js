@@ -53,11 +53,13 @@ const voiceToggleButton = document.getElementById('voice-toggle');
 const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
+let round = 1;
+const roundLimit = 5;
 let player1Points = 0;
 let player2Points = 0;
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
-let player = 2;
+let currentPlayer = 1;
 
 // TTS variables
 const synth = window.speechSynthesis
@@ -164,40 +166,33 @@ function submitAnswer(e) {
     testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
-        if (wordEntry) {
-
-            // toggle player turn (IMPORTANT: order placement of this function affects output)
-            playerTurn();
-
-            // score word
-            console.log('Scored ' + getScoreForCurrentWord() + ' points');
-
+        if (wordEntry) {            
             // add score to player's total (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1TotalScore() : player2TotalScore();
+            currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+
+            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+            currentPlayer === 1 ? player1Submit() : player2Submit();
 
             // add input to frankenword
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
             let newWord = wordEntry[0].word;
-            availablePromptText = newWord.slice(1);
             promptUnusable.textContent = newWord[0];
+            availablePromptText = newWord.slice(1);
             formatPromptSpans();
             selectPromptLetters();
-
-            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1Submit() : player2Submit();
             
             // reset form
             playerForm.reset();
             playerInput.placeholder = "";
             resizeInput();
-
-            // read new word
-            if (isVoiceActive) {
-                readFrankenword();
-            }
             
+            // read new word
+            isVoiceActive ? readFrankenword() : null;
+            
+            // toggle player turn (IMPORTANT: order placement of this function affects output)
+            cyclePlayerTurn();
         // if input did not yield a valid entry in the API
         } else {
             displayPopup('wordRejected', 'word not found, try again!');
@@ -497,15 +492,21 @@ function getScoreForCurrentWord() {
 
     return promptPoints + inputPoints;
 }
-// toggle player turn
-function playerTurn() {
-   player === 1 ? player = 2 : player = 1
+// cycle player turn
+function cyclePlayerTurn() {
+    currentPlayer === 1 ? currentPlayer = 2 : currentPlayer = 1
+    currentPlayer === 1 ? cycleGameRound() : null;
+}
+
+// cycle game round
+function cycleGameRound() {
+    round < roundLimit ? round++ : displayOverlay('gameOver');    
 }
 
 // add player 1 word to player 1 scorecard
 function player1Submit() {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player1Submit.textContent = selectedPromptText + playerInput.value;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
 }
@@ -513,7 +514,7 @@ function player1Submit() {
 // add player 2 word to player 2 scorecard
 function player2Submit() {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player2Submit.textContent = selectedPromptText + playerInput.value;
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
@@ -553,17 +554,31 @@ function hideOverlay() {
 }
 
 function addContentToOverlay(overlay, type) {
-    const h1 = document.createElement('h1');
-    h1.textContent = `Player ${player1Points > player2Points ? '1' : '2'} Wins!`;
-    const h2 = document.createElement('h2');
-    h2.textContent = 'Final Scores:';
-    const finalScores = document.getElementById('scorecards').cloneNode(true);
-    removeAllIds(finalScores);
-    const gameButton = document.createElement('button');
-    gameButton.textContent = 'Start New Game';
-    gameButton.addEventListener('click', resetGame);
+    let h1 = document.createElement('h1');;
+    let button = document.createElement('button');;
 
-    overlay.append(h1, gameButton, h2, finalScores);
+    switch (type) {
+        case 'gameOver':
+            let h2 = document.createElement('h2');
+            let finalScores = document.getElementById('scorecards').cloneNode(true);
+
+            h1.textContent = `Player ${player1Points > player2Points ? '1' : '2'} Wins!`;
+            button.textContent = 'Start New Game';
+            button.addEventListener('click', resetGame);
+            h2.textContent = 'Final Scores:';
+            removeAllIds(finalScores);
+
+            overlay.append(h1, button, h2, finalScores);
+            break;
+    
+        default:
+            h1.textContent = 'Pause'
+            button.textContent = 'Back to Game';
+            button.addEventListener('click', hideOverlay);
+
+            overlay.append(h1, button);
+            break;
+    }
 }
 
 function removeAllIds(node) {
