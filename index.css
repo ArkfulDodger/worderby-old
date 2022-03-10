@@ -2,7 +2,8 @@ body {
     font-size: 16pt;
     font-family: Arial, sans-serif;
     background-color: rgb(255, 239, 204);
-    color:rgb(92, 1, 80);
+    /* color:rgb(92, 1, 80); */
+    color: rgb(106, 72, 0);
     align-content: center;
 }
 
@@ -51,6 +52,7 @@ body > div {
 
 #frankenword {
     font-family: 'American Typewriter';
+    color:rgb(92, 1, 80);
 }
 
 .focused {
@@ -89,7 +91,7 @@ body > div {
     font-weight: bold;
     outline: 0;
     border-width: 0 0 2px;
-    border-color: rgb(92, 1, 80);
+    border-color: rgb(106, 72, 0);
     padding: 0px;
     background-color: #ffefcd;
     color:rgb(92, 1, 80);
@@ -142,7 +144,7 @@ body > div {
 /* The actual popup (appears on top) */
 .popup .popuptext {
     visibility: hidden;
-    width: 160px;
+    width: 200px;
     background-color: rgba(85, 85, 85, 0.735);
     color: #fff;
     text-align: center;
@@ -169,7 +171,7 @@ body > div {
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #555 transparent transparent transparent;
+    border-color: rgba(85, 85, 85, 0.735) transparent transparent transparent;
 }
 
 /* Toggle this class when clicking on the popup container (hide and show the popup) */
