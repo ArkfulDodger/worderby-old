@@ -504,7 +504,8 @@ function resetGame() {
     selectPromptLetters();
     resizeInput();
     hideOverlay();
-    player = 1;
+    currentPlayer = 1;
+    round = 1;
 }
 
 // alert that prompt selection is unusable
@@ -571,8 +572,8 @@ function wordRandomizer() {
 
 // populate content to a given overlay based on type
 function addContentToOverlay(overlay, type) {
-    let h1 = document.createElement('h1');;
-    let button = document.createElement('button');;
+    let h1 = document.createElement('h1');
+    let button = document.createElement('button');
 
     switch (type) {
         case 'gameOver':
