@@ -30,7 +30,7 @@ const titleTextAfterBold = document.getElementById('title-3');
 
 // elements from player form (game area)
 const playerForm = document.getElementById('player-form');
-const controlsPopup = document.getElementById('controls-popup')
+const popup = document.getElementById('controls-popup')
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -56,8 +56,7 @@ let player = 2;
 
 // TTS variables
 const synth = window.speechSynthesis
-const inputForm = document.querySelector('#tts-form');
-let isVoiceActive = true;
+let isVoiceActive = false;
 let voice;
 
 //#endregion
@@ -70,7 +69,7 @@ runTitleAnimationAtInterval(1.5);
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
-setPopupVisibleTo(true);
+setTimeout(() => setPopupVisibleTo(true), 1000);
 resizeInput();
 getVoice();
 
@@ -103,11 +102,6 @@ function cycleTitle() {
             titleTextBold.textContent = 'word';
             titleTextAfterBold.textContent = 'erby';
             break;
-        // case 'bytes':
-        //     titleTextBeforeBold.textContent = '';
-        //     titleTextBold.textContent = 'word';
-        //     titleTextAfterBold.textContent = 'erbytes';
-        //     break;
         
         default:
             console.error('title text cycle broken')
@@ -133,7 +127,7 @@ function addEventListeners() {
     document.addEventListener('keydown', processKeyboardInput)
 
     // Read button reads frankenword
-    inputForm.addEventListener('submit', readFrankenword)
+    frankenword.addEventListener('click', readFrankenword)
 
     // toggle voice reading
     voiceToggleButton.addEventListener('click', toggleVoiceActive)
@@ -141,7 +135,10 @@ function addEventListeners() {
     // dynamically resize input field according to text input
     playerInput.addEventListener('input', resizeInput)
 
-    controlsPopup.addEventListener('click', () => setPopupVisibleTo(false));
+    // click popup to make it go away
+    popup.addEventListener('click', () => setPopupVisibleTo(false));
+
+    // 
 }
 
 // callback for when player submits an answer
@@ -347,9 +344,9 @@ function resizeInput() {
 
 function setPopupVisibleTo(bool) {
     if (bool) {
-        controlsPopup.classList.contains('show') ? null : controlsPopup.classList.add('show');
+        popup.classList.contains('show') ? null : popup.classList.add('show');
     } else {
-        controlsPopup.classList.contains('show') ? controlsPopup.classList.remove('show') : null;
+        popup.classList.contains('show') ? popup.classList.remove('show') : null;
     }
 }
 

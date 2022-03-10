@@ -15,10 +15,8 @@ body {
 #header,
 #play-area,
 #frankenword,
-#new-game,
-#word-list {
+#new-game {
     text-align: center;
-    
 }
 
 /* div {
@@ -26,14 +24,46 @@ body {
 } */
 
 body > div {
-    margin-top: 50px;
-    margin-bottom: 100px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+button, input[type="submit"] {
+    background-color: #0000005d;
+    cursor: pointer;
+    border: solid;
+    border-width: 2px;
+    border-color: transparent;
+    border-radius: 5px;
+    color: white;
+    /* min-width: 100px; */
+    padding: 4px 10px;
+    margin-left: 2px;
+    margin-right: 2px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.2s;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color:rgb(177, 121, 0);
+    border-style: solid;
+    border-color: rgb(255, 174, 0);
+}
+
+button:active, input[type="submit"]:active {
+    background-color:rgb(80, 55, 0);
+    color: rgb(152, 152, 152);
+    border-color: transparent;
 }
 
 #header h1 {
     font-size: 12vw;
     font-family: 'American Typewriter';
-    margin-block-start: 0.2em;
+    margin-block-start: 0em;
     margin-block-end: 0.2em;
 }
 
@@ -50,8 +80,25 @@ body > div {
     font-size: 30pt;
 }
 
+#prompt-and-input {
+    white-space: nowrap;
+}
+
 #frankenword {
     font-family: 'American Typewriter';
+    font-size: 20pt;
+    color:rgb(92, 1, 80);
+    cursor: pointer;
+    width:fit-content;
+    margin: 75px auto;
+    /* transition-duration: 0.5s; */
+}
+
+#frankenword:hover {
+    color:rgb(164, 0, 142);
+}
+
+#frankenword:active {
     color:rgb(92, 1, 80);
 }
 
