@@ -70,6 +70,13 @@ button:active, input[type="submit"]:active {
     border-color: transparent;
 }
 
+input[type="submit"][disabled] {
+    background-color:rgb(80, 55, 0);
+    color: rgb(152, 152, 152);
+    border-color: transparent;
+    cursor: default;
+}
+
 div#header {
     padding-top: 0;
 }
