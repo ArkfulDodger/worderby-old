@@ -559,8 +559,11 @@ function addContentToOverlay(overlay, type) {
     h2.textContent = 'Final Scores:';
     const finalScores = document.getElementById('scorecards').cloneNode(true);
     removeAllIds(finalScores);
+    const gameButton = document.createElement('button');
+    gameButton.textContent = 'Start New Game';
+    gameButton.addEventListener('click', resetGame);
 
-    overlay.append(h1, h2, finalScores);
+    overlay.append(h1, gameButton, h2, finalScores);
 }
 
 function removeAllIds(node) {

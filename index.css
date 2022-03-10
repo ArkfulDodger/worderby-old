@@ -282,8 +282,8 @@ div#header {
     /* display: none; */
     width: 80%;
     height: 80%;
-    max-width: 800px;
-    max-height: 600px;
+    max-width: 560px;
+    max-height: 650px;
     border: 5px ridge rgb(176, 120, 0);
     border-radius: 20px;
     box-shadow: black 6px 8px 20px;
@@ -292,7 +292,7 @@ div#header {
     right: 0;
     bottom: 0;
     margin: auto auto;
-    background-color: rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.99);
     z-index: 2;
     color: white;
     overflow-x: hidden;
@@ -301,6 +301,21 @@ div#header {
     text-align: center;
 }
 
+#overlay > h2 {
+    margin-block-end: 0;
+}
+
 #overlay li {
     text-align: left;
+}
+
+#overlay button {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
+#overlay button:not(button:hover) {
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
