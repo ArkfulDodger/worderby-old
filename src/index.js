@@ -330,10 +330,8 @@ function readFrankenword() {
 // activate/deactivate auto-reading on submit
 function toggleVoiceActive() {
     isVoiceActive = !isVoiceActive;
-    voiceToggleButton.textContent = isVoiceActive ? 'Voice Off' : 'Voice On';
-    if (isVoiceActive) {
-        readFrankenword();
-    }
+    voiceToggleButton.textContent = isVoiceActive ? 'Voice On' : 'Voice Off';
+    isVoiceActive ? voiceToggleButton.classList.add('engaged') : voiceToggleButton.classList.remove('engaged');
 }
 
 // resize input field to min size (incl placeholder) or exact sie of text

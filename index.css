@@ -19,14 +19,19 @@ body {
     text-align: center;
 }
 
+#play-area, #game-info {
+    width: fit-content;
+    margin: 0 auto;
+}
+
 /* div {
     border-style: dashed;
 } */
 
-body > div {
+/* body > div {
     padding-top: 50px;
     padding-bottom: 50px;
-}
+} */
 
 button, input[type="submit"] {
     background-color: #0000005d;
@@ -48,6 +53,11 @@ button, input[type="submit"] {
     transition-duration: 0.2s;
 }
 
+button.engaged {
+    background-color:rgb(148, 101, 0);
+    border-style: transparent;
+}
+
 button:hover, input[type="submit"]:hover {
     background-color:rgb(177, 121, 0);
     border-style: solid;
@@ -60,11 +70,25 @@ button:active, input[type="submit"]:active {
     border-color: transparent;
 }
 
+div#header {
+    padding-top: 0;
+}
+
 #header h1 {
     font-size: 12vw;
     font-family: 'American Typewriter';
-    margin-block-start: 0em;
-    margin-block-end: 0.2em;
+    margin-block-start: 30px;
+    margin-block-end: 15px;
+}
+
+#header p {
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
+#player-form {
+    margin-block-start: 2em;
+    /* margin-block-end: 2em; */
 }
 
 .centered {
@@ -90,7 +114,7 @@ button:active, input[type="submit"]:active {
     color:rgb(92, 1, 80);
     cursor: pointer;
     width:fit-content;
-    margin: 75px auto;
+    margin: 50px auto;
     /* transition-duration: 0.5s; */
 }
 
@@ -152,6 +176,13 @@ button:active, input[type="submit"]:active {
 .scorecard-container {
     display: inline-block;
     margin-top: 0px;
+    vertical-align: top;
+    min-width: 200px;
+}
+
+.scorecard-container h2, .scorecard-container p {
+    text-align: center;
+    font-weight: bold;
 }
 
 #player-1-title{
@@ -164,7 +195,7 @@ button:active, input[type="submit"]:active {
 .scorecard {
     list-style-type: none;
     margin-top: 0px;
-    
+    vertical-align: top;
 }
 
 /* #player-1-score { 
