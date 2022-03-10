@@ -66,8 +66,8 @@ let voice;
 
 //#region CODE RUN ON DOC LOAD ------------------------------------------
 //-----------------------------------------------------------------------
-
 runTitleAnimationAtInterval(1.5);
+wordRandomizer();
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
@@ -75,6 +75,7 @@ selectPromptLetters();
 setTimeout(() => displayPopup('controls'), 1000);
 resizeInput();
 getVoice();
+
 
 //#endregion
 
@@ -172,6 +173,9 @@ function submitAnswer(e) {
             // add score to player's total (IMPORTANT: order placement of this function affects output)
             player === 1 ? player1TotalScore() : player2TotalScore();
 
+            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+            player === 1 ? player1Submit(wordEntry) : player2Submit(wordEntry);
+
             // add input to frankenword
             frankenword.textContent += playerInput.value;
 
@@ -182,8 +186,7 @@ function submitAnswer(e) {
             formatPromptSpans();
             selectPromptLetters();
 
-            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1Submit() : player2Submit();
+            
             
             // reset form
             playerForm.reset();
@@ -443,6 +446,10 @@ function setPopupVisibleTo(bool) {
 function resetGame() {
     // find random prompt word
     console.log('reset game');
+    resetScorecards();
+    wordRandomizer();
+    formatPromptSpans();
+    player = 2;
 }
 
 // alert that prompt selection is unusable
@@ -464,17 +471,18 @@ function playerTurn() {
 }
 
 // add player 1 word to player 1 scorecard
-function player1Submit() {
+function player1Submit(wordEntry) {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player1Submit.textContent = `${wordEntry[0].word} - ${getScoreForCurrentWord()} points`;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
+    console.log(wordEntry[0].word)
 }
 
 // add player 2 word to player 2 scorecard
-function player2Submit() {
+function player2Submit(wordEntry) {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = `${promptUnusable.textContent}${promptUsable.textContent}`;
+    player2Submit.textContent = `${wordEntry[0].word} - ${getScoreForCurrentWord()} points`;
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
@@ -499,6 +507,8 @@ function wordRandomizer() {
     const startingWord = randomWords[Math.floor(Math.random() * randomWords.length)];
     promptUnusable.textContent = startingWord.charAt(0);
     promptUsable.textContent = startingWord.slice(1);
+    availablePromptText = promptUsable.textContent
+    frankenword.textContent = startingWord
 }
 
 // display popup on screen
@@ -537,5 +547,19 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
     setPopupVisibleTo(true);
     timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;
 }
+
+// clears player scorecards and score totals upon clicking new game button
+
+    function resetScorecards() {
+        while (player1Score.hasChildNodes()) {
+            player1Score.removeChild(player1Score.firstChild);
+        }
+        while (player2Score.hasChildNodes()) {
+            player2Score.removeChild(player2Score.firstChild);
+        }
+
+        player1Total.textContent = '0';
+        player2Total.textContent = '0';
+    }
 
 //#endregion
