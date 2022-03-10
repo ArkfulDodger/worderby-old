@@ -72,7 +72,6 @@ let voice;
 //#region CODE RUN ON DOC LOAD ------------------------------------------
 //-----------------------------------------------------------------------
 runTitleAnimationAtInterval(1.5);
-wordRandomizer();
 addEventListeners();
 formatPromptSpans();
 selectPromptLetters();
@@ -173,9 +172,6 @@ function submitAnswer(e) {
 
             // add new word to scorecard (IMPORTANT: order placement of this function affects output)
             currentPlayer === 1 ? player1Submit() : player2Submit();
-
-            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-            player === 1 ? player1Submit(wordEntry[0].word) : player2Submit(wordEntry[0].word);
 
             // add input to frankenword
             frankenword.textContent += playerInput.value;
@@ -533,16 +529,15 @@ function cycleGameRound() {
 }
 
 // add player 1 word to player 1 scorecard
-function player1Submit(wordEntry) {
+function player1Submit() {
     let player1Submit = document.createElement('li');
     player1Submit.textContent = selectedPromptText + playerInput.value;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
-    console.log(wordEntry[0].word)
 }
 
 // add player 2 word to player 2 scorecard
-function player2Submit(wordEntry) {
+function player2Submit() {
     let player2Submit = document.createElement('li');
     player2Submit.textContent = selectedPromptText + playerInput.value;
     player2Submit.className = "player-2-submit";
