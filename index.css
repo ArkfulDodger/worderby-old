@@ -299,6 +299,8 @@ div#header {
     overflow-y: auto;
     padding: 5px 5px;
     text-align: center;
+    -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s
 }
 
 #overlay > h2 {

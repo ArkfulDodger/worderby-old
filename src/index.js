@@ -372,7 +372,7 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
         case 'wordRejected':
             container = promptAndInputContainer;
             message = rejectReason;
-            timeoutDuration = 5;
+            timeoutDuration = 7;
             break;
         default:
             console.error('tried to display unlited popup');
@@ -549,7 +549,7 @@ function displayOverlay(type) {
 function hideOverlay() {
     const overlayDiv = document.getElementById('overlay');
     overlayDiv ? overlayDiv.style.display = 'none' : null;
-    overlayDiv.innerHTML = "";
+    overlayDiv ? overlayDiv.innerHTML = "" : null;
 }
 
 function addContentToOverlay(overlay, type) {
