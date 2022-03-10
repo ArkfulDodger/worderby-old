@@ -191,17 +191,17 @@ button:active, input[type="submit"]:active {
 /* The actual popup (appears on top) */
 .popup .popuptext {
     visibility: hidden;
-    width: 200px;
+    width: fit-content;
     background-color: rgba(85, 85, 85, 0.735);
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 8px 0;
+    padding: 8px 6px;
     position: absolute;
     z-index: 1;
     bottom: 125%;
     left: 50%;
-    margin-left: -80px;
+    margin-left: -100px;
 }
 
 .popuptext {
