@@ -568,19 +568,20 @@ function addContentToOverlay(overlay, type) {
 
     switch (type) {
         case 'gameOver':
-            let worderby = document.getElementById('div');
+            let worderby = document.createElement('div');
             let h2 = document.createElement('h2');
             let finalScores = document.getElementById('scorecards').cloneNode(true);
 
             h1.textContent = `Player ${player1Points > player2Points ? '1' : '2'} Wins!`;
+            worderby.classList.add('worderby');
             worderby.textContent = frankenword.textContent;
-            worderby.addEventListener('click', readFrankenword());
+            worderby.addEventListener('click', readFrankenword);
             button.textContent = 'Start New Game';
             button.addEventListener('click', resetGame);
             h2.textContent = 'Final Scores:';
             removeAllIds(finalScores);
 
-            overlay.append(h1, button, h2, finalScores);
+            overlay.append(h1, worderby, button, h2, finalScores);
             break;
     
         default:

@@ -115,21 +115,26 @@ div#header {
     white-space: nowrap;
 }
 
-#frankenword {
+#frankenword.worderby {
+    margin: 50px auto;
+    color:rgb(92, 1, 80);
+}
+
+.worderby {
     font-family: 'American Typewriter';
     font-size: 20pt;
     color:rgb(92, 1, 80);
     cursor: pointer;
     width:fit-content;
-    margin: 50px auto;
+    margin: 20px auto;
     /* transition-duration: 0.5s; */
 }
 
-#frankenword:hover {
+.worderby:hover {
     color:rgb(164, 0, 142);
 }
 
-#frankenword:active {
+.worderby:active {
     color:rgb(92, 1, 80);
 }
 
