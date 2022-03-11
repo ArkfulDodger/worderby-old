@@ -2,7 +2,6 @@ body {
     font-size: 16pt;
     font-family: Arial, sans-serif;
     background-color: rgb(255, 239, 204);
-    /* color:rgb(92, 1, 80); */
     color: rgb(106, 72, 0);
     align-content: center;
 }
@@ -218,8 +217,8 @@ div#header {
 }
 
 #scorecards h2, #scorecards p {
-    margin-block-start: 0.4em;
-    margin-block-end: 0.4em;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
 }
 
 .scorecard-container {
