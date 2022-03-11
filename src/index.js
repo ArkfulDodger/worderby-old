@@ -38,6 +38,7 @@ const promptAndInputContainer = document.getElementById('prompt-and-input');
 const controlsPopupContainer = document.getElementById('controls-popup-container');
 let popupTimeout;
 const popup = document.getElementById('popup')
+console.log([popup]);
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -369,6 +370,8 @@ function setPopupVisibleTo(bool) {
 
 // display popup on screen
 function displayPopup(popupType, rejectReason = 'word could not be played') {
+    console.log('popup called');
+
     let container;
     let message;
     let timeoutDuration;
@@ -528,6 +531,7 @@ function resetGame() {
         isVoiceActive ? readFrankenword() : null;
         playerInput.removeAttribute('placeholder');
         resizeInput();
+        setFormDisabledTo(false);
         hideOverlay();
     })
 }

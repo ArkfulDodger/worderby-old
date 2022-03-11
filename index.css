@@ -14,9 +14,33 @@ body {
     text-align: center;
 }
 
-#play-area, #game-info {
-    width: fit-content;
+#play-area {
+    padding-bottom: 100px;
+}
+
+#menu {
+    display: inline-block;
+    text-align: center;
+    max-width: 200px;
+}
+
+/* div {
+    border-style: dotted;
+} */
+
+#play-area {
+    max-width: fit-content;
+    width: 100%;
     margin: 0 auto;
+}
+
+#new-game, #expand-words {
+    width: fit-content;
+    margin: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-top: 8px;
+    display: block;
 }
 
 button, input[type="submit"] {
@@ -176,6 +200,11 @@ div#header {
     color: red;
 }
 
+#player-form {
+    overflow-x: scroll;
+    padding-bottom: 5px;
+}
+
 #player-input {
     font-family: Arial, sans-serif;
     font-weight: bold;
@@ -185,6 +214,7 @@ div#header {
     padding: 0px;
     background-color: #ffefcd;
     color:rgb(92, 1, 80);
+    overflow-wrap: anywhere;
     /* width: 100px; */
 }
 
@@ -192,11 +222,30 @@ div#header {
     color:rgba(92, 63, 1, 0.35);
 }
 
+#scorecards h2, #scorecards p {
+    margin-block-start: 0.4em;
+    margin-block-end: 0.4em;
+}
+
 .scorecard-container {
-    display: inline-block;
+    text-align: center;
     margin-top: 0px;
     vertical-align: top;
     min-width: 200px;
+}
+
+#game-info {
+    min-width: 560px;
+    vertical-align: bottom;
+    text-align: center;
+}
+
+#player-1-card {
+    float:left;
+}
+
+#player-2-card {
+    float:right;
 }
 
 .scorecard-container h2, .scorecard-container p {
@@ -332,4 +381,18 @@ div#header {
     background-color: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     color: rgba(255, 255, 255, 0.5);
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background-color: rgb(255, 226, 164);
+    box-shadow: black 0px 0px 10px;
+}
+
+.footer.expand {
+    height: fit-content;
 }
