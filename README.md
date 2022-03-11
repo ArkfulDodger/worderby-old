@@ -173,3 +173,49 @@ You can consult the [json-server docs][] for more information.
 - [json-server][]
 
 [json-server]: https://www.npmjs.com/package/json-server
+
+Worderby Project Presentation Elements:
+
+1. Title animation
+  a. Switch case on interval
+
+2. Intial prompt word randomizer
+  a. Fetch request to random word api 
+
+3. Unusable prompt text
+  a. Event Listener - click alert pop-up to notify player that first letter is not allowed to be used and briefly apply red color
+
+4. Usable prompt text
+  a. Pop-up displaying player is able to select usable prompt letters with shift + arrow keys
+  b. Event listener - keydown (shift + arrow left / right) to select letters
+  c. Event listener - click to select which letter player wants to use
+  d. Dimming / highlight formatting upon selection
+  e. Pop-up alerting player that at least one letter must be selected to play
+
+5. Word submission
+  a. Pop-up alerting player that at least one letter must be typed in input field before submitting
+  b. Event listener - input event to dynamically resize input field depending on text input
+  c. Event listener - submit event for fetch request to dictionary api for word input
+  d. Displays pop-up alerting player if word is not found in dictionary
+  e. Append word and score to scorecard below
+  f. Append word to frankenword
+  g. Expand / Collapse button
+  h. Event listener - click event to expand / collapse scorecards
+  
+6. Voice
+  a. Voice button
+    1. Event listener - click event to toggle voice read of frankenword on/off
+  b. Frankenword
+    2. Event listener - click frankenword for voice read
+    
+7. New game button
+  a. Event listener - click event to start new game
+
+8. Gameover overlay display
+  a. After 5 rounds game is over and overlay displays:
+    1. Final frankenword (voice readable)
+    2. Final scorecard
+    3. New game button
+
+9. Pop-ups
+  a. Event listener - click event to hide

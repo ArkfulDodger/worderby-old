@@ -81,8 +81,7 @@ const pointsRules = [
 ]
 const wordRules = [
     "Cannot use entire prompt word",
-    "Cannot play a word already played this game",
-    "Common suffixes can only be used once per game:"
+    "Cannot play a word already played this game"
 ]
 const restrictedSuffixes = [
     's',
@@ -92,6 +91,7 @@ const restrictedSuffixes = [
     'ing',
     'ive'
 ]
+const suffixesUsedThisGame = [];
 const wordsPlayedThisGame = [];
 let rejectReason = "word not allowed";
 
@@ -213,34 +213,38 @@ function submitAnswer(e) {
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
-            if (wordAllowed(wordEntry[0].word)) {
-                wordsPlayedThisGame.push(wordEntry[0].word);
+            wordAllowed(wordEntry)
+            .then(allowed => {
+                if (allowed) {
+                    wordsPlayedThisGame.push(wordEntry[0].word);
                 
-                // add score to player's total (IMPORTANT: order placement of this function affects output)
-                currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
-    
-                // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-                currentPlayer === 1 ? player1Submit() : player2Submit();
-    
-                // add input to frankenword
-                frankenword.textContent += playerInput.value;
-    
-                // set played word as new prompt
-                setPromptTo(wordEntry[0].word)
-                
-                // reset form
-                playerForm.reset();
-                playerInput.placeholder = "";
-                resizeInput();
-                
-                // read new word
-                isVoiceActive ? readFrankenword() : null;
-                
-                // toggle player turn (IMPORTANT: order placement of this function affects output)
-                cyclePlayerTurn();
-            } else {
-                displayPopup('wordRejected', rejectReason);
-            }
+                    // add score to player's total (IMPORTANT: order placement of this function affects output)
+                    currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+        
+                    // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+                    currentPlayer === 1 ? player1Submit() : player2Submit();
+        
+                    // add input to frankenword
+                    frankenword.textContent += playerInput.value;
+        
+                    // set played word as new prompt
+                    setPromptTo(wordEntry[0].word)
+                    
+                    // reset form
+                    playerForm.reset();
+                    playerInput.placeholder = "";
+                    resizeInput();
+                    
+                    // read new word
+                    isVoiceActive ? readFrankenword() : null;
+                    
+                    // toggle player turn (IMPORTANT: order placement of this function affects output)
+                    cyclePlayerTurn();
+                } else {
+                    displayPopup('wordRejected', rejectReason);
+                }
+            })
+
         // if input did not yield a valid entry in the API
         } else {
             displayPopup('wordRejected', 'word not found, try again!');
@@ -297,7 +301,6 @@ function selectPromptLetters(i = 0) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
     playerInput.focus();
-    console.log(popup.dataset.type);
     popup.dataset.type === 'controls' ? setPopupVisibleTo(false) : null;
 }
 
@@ -408,10 +411,6 @@ function setPopupVisibleTo(bool) {
 
 // display popup on screen
 function displayPopup(popupType, rejectReason = 'default') {
-    console.log('popup called');
-    console.log(popup.textContent);
-    console.log(rejectReason);
-
     // ignore call if popup already on display
     if (popup.classList.contains('show') && popup.dataset.type === popupType) {
         if (popupType !== 'wordRejected' || popup.textContent === rejectReason) {
@@ -586,6 +585,7 @@ function resetGame() {
         setPromptTo(word);
         frankenword.textContent = word;
         wordsPlayedThisGame.length = 0;
+        suffixesUsedThisGame.length = 0;
         isVoiceActive ? readFrankenword() : null;
         playerInput.removeAttribute('placeholder');
         resizeInput();
@@ -705,9 +705,9 @@ function addContentToOverlay(overlay, type) {
             let coreRuleSection = createListFromArray(coreRules);
             let pointsRuleSection = createListFromArray(pointsRules);
             let wordRuleSection = createListFromArray(wordRules);
-            let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
-            let restrictionsList = createListFromArray(restrictionStrings);
-            wordRuleSection.appendChild(restrictionsList);
+            // let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
+            // let restrictionsList = createListFromArray(restrictionStrings);
+            // wordRuleSection.appendChild(restrictionsList);
 
             overlay.append(h1, basicsHeader, coreRuleSection, scoringHeader, pointsRuleSection, rulesHeader, wordRuleSection, button);
             break;
@@ -752,12 +752,72 @@ function toggleFooterExpand() {
     expandButton.textContent = expandButton.textContent === "Expand" ? "Collapse" : "Expand";
 }
 
-function wordAllowed(word) {
-    if (wordsPlayedThisGame.includes(word)) {
+async function wordAllowed(wordEntry) {
+    if (wordsPlayedThisGame.includes(wordEntry[0].word)) {
         rejectReason = "word already used!"
         return false;
     }
-    return true;
+
+    // let usedSuffix = await suffixAlreadyUsed(wordEntry);
+
+    // if (usedSuffix) {
+    //     console.log(`${wordEntry[0].word} ends in suffix chars`);
+    //     return false;
+    // } else {
+    //     console.log('word permitted');
+    //     return true;
+    // }
+}
+
+async function suffixAlreadyUsed(wordEntry) {
+    console.log(`testing ${wordEntry[0].word} for suffix chars`);
+    for (const suffix of restrictedSuffixes) {
+        console.log(`testing ${suffix}`);
+        if (wordEntry[0].word.endsWith(suffix)) {
+
+            let wordWithoutSuffix = wordEntry[0].word.slice(0, suffix.length * -1);
+
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordWithoutSuffix}`)
+
+            const data = await response.json();
+
+            for (let i = 0; i < wordEntry[0].meanings[0].definitions.length; i++) {
+                let comparisonDefinition = wordEntry[0].meanings[0].definitions[i].definition;
+
+                // loop through data entries
+                for (let i = 0; i < data.length; i++) {
+                    let entry = data[i];
+    
+                    // loop through meanings
+                    for (let j = 0; j < entry.meanings.length; j++) {
+                        let meaning = entry.meanings[j];
+    
+                        // loop through definitions
+                        for (let k = 0; k < meaning.definitions.length; k++) {
+                            let definition = meaning.definitions[k].definition;
+                            let match = definition === comparisonDefinition;
+    
+                            if (match) {
+                                console.log(suffixesUsedThisGame);
+
+                                if (suffixesUsedThisGame.includes(suffix)) {
+                                    rejectReason = `-${suffix} suffix already played!`
+                                    return true;
+                                }
+
+                                suffixesUsedThisGame.push(suffix);
+                                console.log(suffixesUsedThisGame);
+                                return false;
+                            }
+                        }
+    
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    return false;
 }
 
 //#endregion
