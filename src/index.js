@@ -59,6 +59,7 @@ const newGameButton = document.getElementById('new-game-button');
 
 // game mechanics variables
 let round = 1;
+let isGameOver = false;
 const roundLimit = 5;
 let player1Points = 0;
 let player2Points = 0;
@@ -97,6 +98,7 @@ function pageLoad() {
     resizeInput();
     round = 1;
     currentPlayer = 1;
+    isGameOver = false;
 }
 
 // starts the title animation
@@ -206,8 +208,10 @@ function submitAnswer(e) {
             displayPopup('wordRejected', 'word not found, try again!');
         }
 
-        setFormDisabledTo(false);
-        playerInput.focus();
+        if (!isGameOver) {
+            setFormDisabledTo(false);
+            playerInput.focus();
+        }
     })
 }
 
@@ -515,6 +519,7 @@ function resetGame() {
     resetScorecards();
     currentPlayer = 1;
     round = 1;
+    isGameOver = false;
 
     getRandomWord()
     .then(word => {
@@ -530,7 +535,10 @@ function resetGame() {
 
 
 // alert that prompt selection is unusable
-function instructUnusablePrompt() {
+function instructUnusablePrompt(e) {
+    if (e.target.id !== 'prompt-unusable') {
+        return;
+    }
     flashTextRed(promptUnusable);
     displayPopup('unusablePrompt');
 }
@@ -550,7 +558,12 @@ function cyclePlayerTurn() {
 
 // cycle game round
 function cycleGameRound() {
-    round < roundLimit ? round++ : displayOverlay('gameOver');    
+    round < roundLimit ? round++ : setGameOver();    
+}
+
+function setGameOver() {
+    isGameOver = true;
+    displayOverlay('gameOver')
 }
 
 // add player 1 word to player 1 scorecard
