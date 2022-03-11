@@ -7,6 +7,11 @@
 // site: https://dictionaryapi.dev/
 // GET URL: https://api.dictionaryapi.dev/api/v2/entries/en/${word}
 
+// Random Word API
+// fetch random word (or words)
+// site: http://random-word-api.herokuapp.com/home
+// GET URL: https://random-word-api.herokuapp.com/word?swear=0
+
 // Datamuse API
 // useful for: getting a list of words that start with/end with a string
 // site: https://www.datamuse.com/api/
@@ -60,6 +65,7 @@ let player2Points = 0;
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
 let currentPlayer = 1;
+const randomWords = ["begin", "start", "launch", "go", "embark", "initiate", "commence",];
 
 // TTS variables
 const synth = window.speechSynthesis
@@ -71,21 +77,27 @@ let voice;
 
 //#region CODE RUN ON DOC LOAD ------------------------------------------
 //-----------------------------------------------------------------------
-runTitleAnimationAtInterval(1.5);
-addEventListeners();
-formatPromptSpans();
-selectPromptLetters();
-setTimeout(() => displayPopup('controls'), 1000);
-resizeInput();
-getVoice();
-// displayOverlay();
 
+pageLoad();
 
 //#endregion
 
 
 //#region FUNCTIONS - COMPLETE ------------------------------------------
 //-----------------------------------------------------------------------
+
+function pageLoad() {
+    runTitleAnimationAtInterval(1.5);
+    addEventListeners();
+    getVoice();
+    setTimeout(() => displayPopup('controls'), 1000);
+    setPromptTo('begin');
+    frankenword.textContent = 'begin';
+    playerInput.placeholder = 'gerbread';
+    resizeInput();
+    round = 1;
+    currentPlayer = 1;
+}
 
 // starts the title animation
 function runTitleAnimationAtInterval(intervalInSeconds) {
@@ -177,11 +189,7 @@ function submitAnswer(e) {
             frankenword.textContent += playerInput.value;
 
             // set played word as new prompt
-            let newWord = wordEntry[0].word;
-            promptUnusable.textContent = newWord[0];
-            availablePromptText = newWord.slice(1);
-            formatPromptSpans();
-            selectPromptLetters();
+            setPromptTo(wordEntry[0].word)
             
             // reset form
             playerForm.reset();
@@ -201,6 +209,13 @@ function submitAnswer(e) {
         setFormDisabledTo(false);
         playerInput.focus();
     })
+}
+
+function setPromptTo(word) {
+    promptUnusable.textContent = word[0];
+    availablePromptText = word.slice(1);
+    formatPromptSpans();
+    selectPromptLetters();
 }
 
 // test whether current player word guess is a word or not. Returns word entry or false
@@ -497,16 +512,22 @@ function removeAllIds(node) {
 //-----------------------------------------------------------------------
 // reset page for new game
 function resetGame() {
-    console.log('reset game');
     resetScorecards();
-    wordRandomizer();
-    formatPromptSpans();
-    selectPromptLetters();
-    resizeInput();
-    hideOverlay();
     currentPlayer = 1;
     round = 1;
+
+    getRandomWord()
+    .then(word => {
+        setPromptTo(word);
+        frankenword.textContent = word;
+        isVoiceActive ? readFrankenword() : null;
+        playerInput.removeAttribute('placeholder');
+        resizeInput();
+        hideOverlay();
+    })
 }
+
+
 
 // alert that prompt selection is unusable
 function instructUnusablePrompt() {
@@ -561,13 +582,11 @@ function player2TotalScore() {
 }
 
 // randomize starting word
-function wordRandomizer() {
-    const randomWords = ["begin", "cat", "dog"];
-    const startingWord = randomWords[Math.floor(Math.random() * randomWords.length)];
-    promptUnusable.textContent = startingWord.charAt(0);
-    promptUsable.textContent = startingWord.slice(1);
-    availablePromptText = promptUsable.textContent
-    frankenword.textContent = startingWord
+function getRandomWord() {
+    return fetch(`https://random-word-api.herokuapp.com/word?swear=0`)
+    .then( res => res.json())
+    .then( data => data[0])
+    .catch( error => console.log(error.message));
 }
 
 // populate content to a given overlay based on type
@@ -614,6 +633,8 @@ function resetScorecards() {
     }
     player1Total.textContent = '0';
     player2Total.textContent = '0';
+    player1Points = 0;
+    player2Points = 0;
 }
 
 //#endregion

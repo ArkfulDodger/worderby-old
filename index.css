@@ -115,27 +115,47 @@ div#header {
     white-space: nowrap;
 }
 
-#frankenword {
-    margin: 50px auto;
-}
-
 .worderby {
     font-family: 'American Typewriter';
     font-size: 20pt;
-    color:rgb(92, 1, 80);
     cursor: pointer;
     width:fit-content;
-    margin: 20px auto;
+    margin-left: auto;
+    margin-right: auto;
     overflow-x: hidden;
-    /* transition-duration: 0.5s; */
 }
 
-.worderby:hover {
+#frankenword.worderby {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color:rgb(92, 1, 80);
+}
+
+#frankenword.worderby:hover {
     color:rgb(164, 0, 142);
 }
 
-.worderby:active {
+#frankenword.worderby:active {
     color:rgb(92, 1, 80);
+}
+
+#overlay .worderby {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color:rgb(208, 0, 180);
+}
+
+#overlay .worderby:hover {
+    color:rgb(240, 81, 219);
+}
+
+#overlay .worderby:active {
+    color:rgb(208, 0, 180);
+}
+
+#overlay p {
+    font-size: 24pt;
+    color:rgb(255, 192, 55);
 }
 
 .focused {

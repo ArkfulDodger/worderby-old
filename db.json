@@ -1,35 +1,4 @@
 {
-    "currentGame": [
-        {
-            "id": 1,
-            "prompt": "begin",
-            "worderby": "begin",
-            "round": 1,
-            "turn": 1,
-            "players": [
-                {
-                    "id": 1,
-                    "turnOrder": 1,
-                    "score": 0
-                },
-                {
-                    "id": 2,
-                    "turnOrder": 2,
-                    "score": 0
-                }
-            ],
-            "words": [
-                {
-                    "id": 1,
-                    "word": "begin"
-                }
-            ]
-        }
-    ],
-    "games": [
-
-    ],
-    "highScores": [
-
+    "high scores": [
     ]
 }
