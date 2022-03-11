@@ -399,12 +399,21 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
             return;
     }
 
+    console.log(container);
+    console.log(message);
+
     if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        console.log('ejected from function');
         return;
     }
 
+    console.log(popup.cloneNode());
+
     clearTimeout(popupTimeout);
     popup.textContent = message;
+
+    console.log(popup.cloneNode());
+
     container.appendChild(popup);
     setPopupVisibleTo(true);
     timeoutDuration ? popupTimeout = setTimeout(() => setPopupVisibleTo(false), timeoutDuration * 1000) : null;

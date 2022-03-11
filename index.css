@@ -200,11 +200,6 @@ div#header {
     color: red;
 }
 
-#player-form {
-    overflow-x: scroll;
-    padding-bottom: 5px;
-}
-
 #player-input {
     font-family: Arial, sans-serif;
     font-weight: bold;
