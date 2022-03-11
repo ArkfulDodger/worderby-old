@@ -228,7 +228,7 @@ div#header {
 }
 
 .scorecard-container {
-    text-align: center;
+    text-align: left;
     margin-top: 0px;
     vertical-align: top;
     min-width: 200px;

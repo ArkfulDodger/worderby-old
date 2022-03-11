@@ -38,7 +38,6 @@ const promptAndInputContainer = document.getElementById('prompt-and-input');
 const controlsPopupContainer = document.getElementById('controls-popup-container');
 let popupTimeout;
 const popup = document.getElementById('popup')
-console.log([popup]);
 const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
@@ -55,8 +54,11 @@ const player2Total = document.getElementById('player-2-total')
 const frankenword = document.getElementById('frankenword');
 const voiceToggleButton = document.getElementById('voice-toggle');
 
-// new game button
+// menu buttons
 const newGameButton = document.getElementById('new-game-button');
+const expandButton = document.getElementById('expand-button');
+const footer = document.getElementById('game-info');
+const playDiv = document.getElementById('play-area')
 
 // game mechanics variables
 let round = 1;
@@ -161,7 +163,8 @@ function addEventListeners() {
     // click popup to make it go away
     popup.addEventListener('click', () => setPopupVisibleTo(false));
 
-    // 
+    
+    expandButton.addEventListener('click', toggleFooterExpand);
 }
 
 // callback for when player submits an answer
@@ -652,6 +655,11 @@ function resetScorecards() {
     player2Total.textContent = '0';
     player1Points = 0;
     player2Points = 0;
+}
+
+function toggleFooterExpand() {
+    footer.classList.toggle('expand');
+    expandButton.textContent = expandButton.textContent === "Expand" ? "Collapse" : "Expand";
 }
 
 //#endregion
