@@ -115,9 +115,8 @@ div#header {
     white-space: nowrap;
 }
 
-#frankenword.worderby {
+#frankenword {
     margin: 50px auto;
-    color:rgb(92, 1, 80);
 }
 
 .worderby {
@@ -127,6 +126,7 @@ div#header {
     cursor: pointer;
     width:fit-content;
     margin: 20px auto;
+    overflow-x: hidden;
     /* transition-duration: 0.5s; */
 }
 
