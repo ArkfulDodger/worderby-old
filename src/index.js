@@ -73,14 +73,14 @@ let currentPlayer = 1;
 const coreRules = [
     `Score the most points in ${roundLimit} rounds by playing words`,
     `Select a starting point for your word within the prompt word (last word played)`,
-    `Cannot start with first letter of prompt word`,
-    `Must add at least one letter to play a word`
+    `Add at least one new letter to finish your word`
 ];
 const pointsRules = [
     `${pointsPerPromptLetter} point${pointsPerPromptLetter === 1 ? '' : 's'} - per prompt letter used`,
     `${pointsPerInputLetter} point${pointsPerInputLetter === 1 ? '' : 's'} - per new letter added`,
 ]
 const wordRules = [
+    "Cannot use entire prompt word",
     "Cannot play a word already played this game",
     "Common suffixes can only be used once per game:"
 ]
@@ -670,11 +670,20 @@ function addContentToOverlay(overlay, type) {
             h1.textContent = 'How to Play';
             button.textContent = "Close";
             button.addEventListener('click', hideOverlay);
-            let coreRuleSection = createHeadedListFromArray('', coreRules);
-            let pointsRuleSection = createHeadedListFromArray('Scoring', pointsRules);
-            let wordRuleSection = createHeadedListFromArray('Restrictions', wordRules);
+            let basicsHeader = document.createElement('h3');
+            basicsHeader.textContent = 'Basics';
+            let rulesHeader = document.createElement('h3');
+            rulesHeader.textContent = 'Rules';
+            let scoringHeader = document.createElement('h3');
+            scoringHeader.textContent = 'Scoring';
+            let coreRuleSection = createListFromArray(coreRules);
+            let pointsRuleSection = createListFromArray(pointsRules);
+            let wordRuleSection = createListFromArray(wordRules);
+            let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
+            let restrictionsList = createListFromArray(restrictionStrings);
+            wordRuleSection.appendChild(restrictionsList);
 
-            overlay.append(h1, coreRuleSection, pointsRuleSection, wordRuleSection, button);
+            overlay.append(h1, basicsHeader, coreRuleSection, scoringHeader, pointsRuleSection, rulesHeader, wordRuleSection, button);
             break;
 
         default:
@@ -687,18 +696,14 @@ function addContentToOverlay(overlay, type) {
     }
 }
 
-function createHeadedListFromArray(header, array) {
-    let span = document.createElement('span');
-    let h3 = document.createElement('h3');
-    h3.textContent = header;
+function createListFromArray(array) {
     let ul = document.createElement('ul');
     for (const item of array) {
         let li = document.createElement('li');
         li.textContent = item;
         ul.appendChild(li);
     }
-    span.append(h3, ul);
-    return span;
+    return ul;
 }
 
 // clears player scorecards and score totals upon clicking new game button
