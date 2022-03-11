@@ -81,8 +81,7 @@ const pointsRules = [
 ]
 const wordRules = [
     "Cannot use entire prompt word",
-    "Cannot play a word already played this game",
-    "Common suffixes can only be used once per game:"
+    "Cannot play a word already played this game"
 ]
 const restrictedSuffixes = [
     's',
@@ -705,9 +704,9 @@ function addContentToOverlay(overlay, type) {
             let coreRuleSection = createListFromArray(coreRules);
             let pointsRuleSection = createListFromArray(pointsRules);
             let wordRuleSection = createListFromArray(wordRules);
-            let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
-            let restrictionsList = createListFromArray(restrictionStrings);
-            wordRuleSection.appendChild(restrictionsList);
+            // let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
+            // let restrictionsList = createListFromArray(restrictionStrings);
+            // wordRuleSection.appendChild(restrictionsList);
 
             overlay.append(h1, basicsHeader, coreRuleSection, scoringHeader, pointsRuleSection, rulesHeader, wordRuleSection, button);
             break;
