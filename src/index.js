@@ -213,38 +213,34 @@ function submitAnswer(e) {
     .then( wordEntry => {
         // if a valid word entry was found in the API
         if (wordEntry) {
-            wordAllowed(wordEntry)
-            .then(allowed => {
-                if (allowed) {
-                    wordsPlayedThisGame.push(wordEntry[0].word);
+            if (wordAllowed(wordEntry)) {
+                wordsPlayedThisGame.push(wordEntry[0].word);
+            
+                // add score to player's total (IMPORTANT: order placement of this function affects output)
+                currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+    
+                // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+                currentPlayer === 1 ? player1Submit() : player2Submit();
+    
+                // add input to frankenword
+                frankenword.textContent += playerInput.value;
+    
+                // set played word as new prompt
+                setPromptTo(wordEntry[0].word)
                 
-                    // add score to player's total (IMPORTANT: order placement of this function affects output)
-                    currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
-        
-                    // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-                    currentPlayer === 1 ? player1Submit() : player2Submit();
-        
-                    // add input to frankenword
-                    frankenword.textContent += playerInput.value;
-        
-                    // set played word as new prompt
-                    setPromptTo(wordEntry[0].word)
-                    
-                    // reset form
-                    playerForm.reset();
-                    playerInput.placeholder = "";
-                    resizeInput();
-                    
-                    // read new word
-                    isVoiceActive ? readFrankenword() : null;
-                    
-                    // toggle player turn (IMPORTANT: order placement of this function affects output)
-                    cyclePlayerTurn();
-                } else {
-                    displayPopup('wordRejected', rejectReason);
-                }
-            })
-
+                // reset form
+                playerForm.reset();
+                playerInput.placeholder = "";
+                resizeInput();
+                
+                // read new word
+                isVoiceActive ? readFrankenword() : null;
+                
+                // toggle player turn (IMPORTANT: order placement of this function affects output)
+                cyclePlayerTurn();
+            } else {
+                displayPopup('wordRejected', rejectReason);
+            }
         // if input did not yield a valid entry in the API
         } else {
             displayPopup('wordRejected', 'word not found, try again!');
@@ -418,11 +414,11 @@ function displayPopup(popupType, rejectReason = 'default') {
         }
     }
 
-    if (popupType === 'wordRejected' && popup.textContent === rejectReason && popup.classList.contains('show')) {
-        return;
-    } else if (popup.dataset.type === popupType && popup.classList.contains('show')) {
-        return;
-    }
+    // if (popupType === 'wordRejected' && popup.textContent === rejectReason && popup.classList.contains('show')) {
+    //     return;
+    // } else if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+    //     return;
+    // }
 
     let container;
     let message;
@@ -752,22 +748,30 @@ function toggleFooterExpand() {
     expandButton.textContent = expandButton.textContent === "Expand" ? "Collapse" : "Expand";
 }
 
-async function wordAllowed(wordEntry) {
+function wordAllowed(wordEntry) {
     if (wordsPlayedThisGame.includes(wordEntry[0].word)) {
         rejectReason = "word already used!"
         return false;
     }
-
-    let usedSuffix = await suffixAlreadyUsed(wordEntry);
-
-    if (usedSuffix) {
-        console.log(`${wordEntry[0].word} ends in suffix chars`);
-        return false;
-    } else {
-        console.log('word permitted');
-        return true;
-    }
+    return true
 }
+
+// async function wordAllowed(wordEntry) {
+//     if (wordsPlayedThisGame.includes(wordEntry[0].word)) {
+//         rejectReason = "word already used!"
+//         return false;
+//     }
+
+//     let usedSuffix = await suffixAlreadyUsed(wordEntry);
+
+//     if (usedSuffix) {
+//         console.log(`${wordEntry[0].word} ends in suffix chars`);
+//         return false;
+//     } else {
+//         console.log('word permitted');
+//         return true;
+//     }
+// }
 
 async function suffixAlreadyUsed(wordEntry) {
     console.log(`testing ${wordEntry[0].word} for suffix chars`);
