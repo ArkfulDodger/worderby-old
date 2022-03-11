@@ -81,8 +81,7 @@ const pointsRules = [
 ]
 const wordRules = [
     "Cannot use entire prompt word",
-    "Cannot play a word already played this game",
-    "Common suffixes can only be used once per game:"
+    "Cannot play a word already played this game"
 ]
 const restrictedSuffixes = [
     's',
@@ -297,7 +296,6 @@ function selectPromptLetters(i = 0) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
     playerInput.focus();
-    console.log(popup.dataset.type);
     popup.dataset.type === 'controls' ? setPopupVisibleTo(false) : null;
 }
 
@@ -408,10 +406,6 @@ function setPopupVisibleTo(bool) {
 
 // display popup on screen
 function displayPopup(popupType, rejectReason = 'default') {
-    console.log('popup called');
-    console.log(popup.textContent);
-    console.log(rejectReason);
-
     // ignore call if popup already on display
     if (popup.classList.contains('show') && popup.dataset.type === popupType) {
         if (popupType !== 'wordRejected' || popup.textContent === rejectReason) {
@@ -705,9 +699,9 @@ function addContentToOverlay(overlay, type) {
             let coreRuleSection = createListFromArray(coreRules);
             let pointsRuleSection = createListFromArray(pointsRules);
             let wordRuleSection = createListFromArray(wordRules);
-            let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
-            let restrictionsList = createListFromArray(restrictionStrings);
-            wordRuleSection.appendChild(restrictionsList);
+            // let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
+            // let restrictionsList = createListFromArray(restrictionStrings);
+            // wordRuleSection.appendChild(restrictionsList);
 
             overlay.append(h1, basicsHeader, coreRuleSection, scoringHeader, pointsRuleSection, rulesHeader, wordRuleSection, button);
             break;
