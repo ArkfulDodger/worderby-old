@@ -263,7 +263,6 @@ function setPromptTo(word) {
 // test whether current player word guess is a word or not. Returns word entry or false
 function testSingleWord() {
     const testWord = selectedPromptText + playerInput.value;
-    console.log('testing: ' + testWord);
     
     return getWord(testWord)
 }
@@ -402,11 +401,29 @@ function setPopupVisibleTo(bool) {
         popup.classList.contains('show') ? null : popup.classList.add('show');
     } else {
         popup.classList.contains('show') ? popup.classList.remove('show') : null;
+        popup.dataset.type = "";
     }
 }
 
 // display popup on screen
-function displayPopup(popupType, rejectReason = 'word could not be played') {
+function displayPopup(popupType, rejectReason = 'default') {
+    console.log('popup called');
+    console.log(popup.textContent);
+    console.log(rejectReason);
+
+    // ignore call if popup already on display
+    if (popup.classList.contains('show') && popup.dataset.type === popupType) {
+        if (popupType !== 'wordRejected' || popup.textContent === rejectReason) {
+            return;
+        }
+    }
+
+    if (popupType === 'wordRejected' && popup.textContent === rejectReason && popup.classList.contains('show')) {
+        return;
+    } else if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        return;
+    }
+
     let container;
     let message;
     let timeoutDuration;
@@ -426,17 +443,20 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
             message = rejectReason;
             timeoutDuration = 7;
             break;
+        case 'newRound':
+            container = promptAndInputContainer;
+            message = `Round ${round} of ${roundLimit}`;
+            timeoutDuration = 7;
+            break;
         default:
-            console.error('tried to display unlited popup');
+            console.error('tried to display unlisted popup');
             return;
     }
 
-    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
-        return;
-    }
 
     clearTimeout(popupTimeout);
     popup.textContent = message;
+    popup.dataset.type = popupType;
 
     container.appendChild(popup);
     setPopupVisibleTo(true);
@@ -599,7 +619,12 @@ function cyclePlayerTurn() {
 
 // cycle game round
 function cycleGameRound() {
-    round < roundLimit ? round++ : setGameOver();    
+    if (round < roundLimit) {
+        round++;
+        displayPopup('newRound');
+    } else {
+        setGameOver();
+    }   
 }
 
 function setGameOver() {
