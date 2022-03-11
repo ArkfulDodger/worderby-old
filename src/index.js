@@ -42,6 +42,7 @@ const promptUnusable = document.getElementById('prompt-unusable');
 const promptUsable = document.getElementById('prompt-usable');
 const playerInput = document.getElementById('player-input');
 const submitButton = document.querySelector('#player-form [type="submit"]');
+const rulesButton = document.getElementById('rules-button');
 let availablePromptText = promptUsable.textContent;
 let selectedPromptText = "";
 const player1Score = document.getElementById('player-1-score')
@@ -69,7 +70,30 @@ let player2Points = 0;
 const pointsPerPromptLetter = 10;
 const pointsPerInputLetter = 1;
 let currentPlayer = 1;
-const randomWords = ["begin", "start", "launch", "go", "embark", "initiate", "commence",];
+const coreRules = [
+    `Score the most points in ${roundLimit} rounds by playing words`,
+    `Select a starting point for your word within the prompt word (last word played)`,
+    `Add at least one new letter to finish your word`
+];
+const pointsRules = [
+    `${pointsPerPromptLetter} point${pointsPerPromptLetter === 1 ? '' : 's'} - per prompt letter used`,
+    `${pointsPerInputLetter} point${pointsPerInputLetter === 1 ? '' : 's'} - per new letter added`,
+]
+const wordRules = [
+    "Cannot use entire prompt word",
+    "Cannot play a word already played this game"
+]
+const restrictedSuffixes = [
+    's',
+    'ly',
+    'ful',
+    'ish',
+    'ing',
+    'ive'
+]
+const suffixesUsedThisGame = [];
+const wordsPlayedThisGame = [];
+let rejectReason = "word not allowed";
 
 // TTS variables
 const synth = window.speechSynthesis
@@ -98,6 +122,7 @@ function pageLoad() {
     setPromptTo('begin');
     frankenword.textContent = 'begin';
     playerInput.placeholder = 'gerbread';
+    wordsPlayedThisGame.length = 0;
     resizeInput();
     round = 1;
     currentPlayer = 1;
@@ -163,8 +188,11 @@ function addEventListeners() {
     // click popup to make it go away
     popup.addEventListener('click', () => setPopupVisibleTo(false));
 
-    
+    // click to expand/collapse footer
     expandButton.addEventListener('click', toggleFooterExpand);
+
+    // click to display rules overlay
+    rulesButton.addEventListener('click', () => displayOverlay('rules'));
 }
 
 // callback for when player submits an answer
@@ -184,29 +212,39 @@ function submitAnswer(e) {
     testSingleWord()
     .then( wordEntry => {
         // if a valid word entry was found in the API
-        if (wordEntry) {            
-            // add score to player's total (IMPORTANT: order placement of this function affects output)
-            currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+        if (wordEntry) {
+            wordAllowed(wordEntry)
+            .then(allowed => {
+                if (allowed) {
+                    wordsPlayedThisGame.push(wordEntry[0].word);
+                
+                    // add score to player's total (IMPORTANT: order placement of this function affects output)
+                    currentPlayer === 1 ? player1TotalScore() : player2TotalScore();
+        
+                    // add new word to scorecard (IMPORTANT: order placement of this function affects output)
+                    currentPlayer === 1 ? player1Submit() : player2Submit();
+        
+                    // add input to frankenword
+                    frankenword.textContent += playerInput.value;
+        
+                    // set played word as new prompt
+                    setPromptTo(wordEntry[0].word)
+                    
+                    // reset form
+                    playerForm.reset();
+                    playerInput.placeholder = "";
+                    resizeInput();
+                    
+                    // read new word
+                    isVoiceActive ? readFrankenword() : null;
+                    
+                    // toggle player turn (IMPORTANT: order placement of this function affects output)
+                    cyclePlayerTurn();
+                } else {
+                    displayPopup('wordRejected', rejectReason);
+                }
+            })
 
-            // add new word to scorecard (IMPORTANT: order placement of this function affects output)
-            currentPlayer === 1 ? player1Submit() : player2Submit();
-
-            // add input to frankenword
-            frankenword.textContent += playerInput.value;
-
-            // set played word as new prompt
-            setPromptTo(wordEntry[0].word)
-            
-            // reset form
-            playerForm.reset();
-            playerInput.placeholder = "";
-            resizeInput();
-            
-            // read new word
-            isVoiceActive ? readFrankenword() : null;
-            
-            // toggle player turn (IMPORTANT: order placement of this function affects output)
-            cyclePlayerTurn();
         // if input did not yield a valid entry in the API
         } else {
             displayPopup('wordRejected', 'word not found, try again!');
@@ -229,7 +267,6 @@ function setPromptTo(word) {
 // test whether current player word guess is a word or not. Returns word entry or false
 function testSingleWord() {
     const testWord = selectedPromptText + playerInput.value;
-    console.log('testing: ' + testWord);
     
     return getWord(testWord)
 }
@@ -264,7 +301,7 @@ function selectPromptLetters(i = 0) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
     playerInput.focus();
-    setPopupVisibleTo(false);
+    popup.dataset.type === 'controls' ? setPopupVisibleTo(false) : null;
 }
 
 // highlight selected portion of prompt, dim unused portion
@@ -368,12 +405,24 @@ function setPopupVisibleTo(bool) {
         popup.classList.contains('show') ? null : popup.classList.add('show');
     } else {
         popup.classList.contains('show') ? popup.classList.remove('show') : null;
+        popup.dataset.type = "";
     }
 }
 
 // display popup on screen
-function displayPopup(popupType, rejectReason = 'word could not be played') {
-    console.log('popup called');
+function displayPopup(popupType, rejectReason = 'default') {
+    // ignore call if popup already on display
+    if (popup.classList.contains('show') && popup.dataset.type === popupType) {
+        if (popupType !== 'wordRejected' || popup.textContent === rejectReason) {
+            return;
+        }
+    }
+
+    if (popupType === 'wordRejected' && popup.textContent === rejectReason && popup.classList.contains('show')) {
+        return;
+    } else if (popup.dataset.type === popupType && popup.classList.contains('show')) {
+        return;
+    }
 
     let container;
     let message;
@@ -394,25 +443,20 @@ function displayPopup(popupType, rejectReason = 'word could not be played') {
             message = rejectReason;
             timeoutDuration = 7;
             break;
+        case 'newRound':
+            container = promptAndInputContainer;
+            message = `Round ${round} of ${roundLimit}`;
+            timeoutDuration = 7;
+            break;
         default:
-            console.error('tried to display unlited popup');
+            console.error('tried to display unlisted popup');
             return;
     }
 
-    console.log(container);
-    console.log(message);
-
-    if (popup.dataset.type === popupType && popup.classList.contains('show')) {
-        console.log('ejected from function');
-        return;
-    }
-
-    console.log(popup.cloneNode());
 
     clearTimeout(popupTimeout);
     popup.textContent = message;
-
-    console.log(popup.cloneNode());
+    popup.dataset.type = popupType;
 
     container.appendChild(popup);
     setPopupVisibleTo(true);
@@ -540,6 +584,8 @@ function resetGame() {
     .then(word => {
         setPromptTo(word);
         frankenword.textContent = word;
+        wordsPlayedThisGame.length = 0;
+        suffixesUsedThisGame.length = 0;
         isVoiceActive ? readFrankenword() : null;
         playerInput.removeAttribute('placeholder');
         resizeInput();
@@ -574,7 +620,12 @@ function cyclePlayerTurn() {
 
 // cycle game round
 function cycleGameRound() {
-    round < roundLimit ? round++ : setGameOver();    
+    if (round < roundLimit) {
+        round++;
+        displayPopup('newRound');
+    } else {
+        setGameOver();
+    }   
 }
 
 function setGameOver() {
@@ -585,7 +636,7 @@ function setGameOver() {
 // add player 1 word to player 1 scorecard
 function player1Submit() {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = selectedPromptText + playerInput.value + ' - ' + getScoreForCurrentWord();
+    player1Submit.textContent = getScoreForCurrentWord() + ' - ' + selectedPromptText + playerInput.value;
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
 }
@@ -593,7 +644,7 @@ function player1Submit() {
 // add player 2 word to player 2 scorecard
 function player2Submit() {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = selectedPromptText + playerInput.value + ' - ' + getScoreForCurrentWord();
+    player2Submit.textContent = getScoreForCurrentWord() + ' - ' + selectedPromptText + playerInput.value;
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
@@ -641,6 +692,26 @@ function addContentToOverlay(overlay, type) {
             overlay.append(h1, worderby, button, h2, finalScores);
             break;
     
+        case 'rules':
+            h1.textContent = 'How to Play';
+            button.textContent = "Close";
+            button.addEventListener('click', hideOverlay);
+            let basicsHeader = document.createElement('h3');
+            basicsHeader.textContent = 'Basics';
+            let rulesHeader = document.createElement('h3');
+            rulesHeader.textContent = 'Rules';
+            let scoringHeader = document.createElement('h3');
+            scoringHeader.textContent = 'Scoring';
+            let coreRuleSection = createListFromArray(coreRules);
+            let pointsRuleSection = createListFromArray(pointsRules);
+            let wordRuleSection = createListFromArray(wordRules);
+            // let restrictionStrings = restrictedSuffixes.map(suffix => `-${suffix}`);
+            // let restrictionsList = createListFromArray(restrictionStrings);
+            // wordRuleSection.appendChild(restrictionsList);
+
+            overlay.append(h1, basicsHeader, coreRuleSection, scoringHeader, pointsRuleSection, rulesHeader, wordRuleSection, button);
+            break;
+
         default:
             h1.textContent = 'Pause'
             button.textContent = 'Back to Game';
@@ -649,6 +720,16 @@ function addContentToOverlay(overlay, type) {
             overlay.append(h1, button);
             break;
     }
+}
+
+function createListFromArray(array) {
+    let ul = document.createElement('ul');
+    for (const item of array) {
+        let li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+    }
+    return ul;
 }
 
 // clears player scorecards and score totals upon clicking new game button
@@ -669,6 +750,74 @@ function resetScorecards() {
 function toggleFooterExpand() {
     footer.classList.toggle('expand');
     expandButton.textContent = expandButton.textContent === "Expand" ? "Collapse" : "Expand";
+}
+
+async function wordAllowed(wordEntry) {
+    if (wordsPlayedThisGame.includes(wordEntry[0].word)) {
+        rejectReason = "word already used!"
+        return false;
+    }
+
+    let usedSuffix = await suffixAlreadyUsed(wordEntry);
+
+    if (usedSuffix) {
+        console.log(`${wordEntry[0].word} ends in suffix chars`);
+        return false;
+    } else {
+        console.log('word permitted');
+        return true;
+    }
+}
+
+async function suffixAlreadyUsed(wordEntry) {
+    console.log(`testing ${wordEntry[0].word} for suffix chars`);
+    for (const suffix of restrictedSuffixes) {
+        console.log(`testing ${suffix}`);
+        if (wordEntry[0].word.endsWith(suffix)) {
+
+            let wordWithoutSuffix = wordEntry[0].word.slice(0, suffix.length * -1);
+
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordWithoutSuffix}`)
+
+            const data = await response.json();
+
+            for (let i = 0; i < wordEntry[0].meanings[0].definitions.length; i++) {
+                let comparisonDefinition = wordEntry[0].meanings[0].definitions[i].definition;
+
+                // loop through data entries
+                for (let i = 0; i < data.length; i++) {
+                    let entry = data[i];
+    
+                    // loop through meanings
+                    for (let j = 0; j < entry.meanings.length; j++) {
+                        let meaning = entry.meanings[j];
+    
+                        // loop through definitions
+                        for (let k = 0; k < meaning.definitions.length; k++) {
+                            let definition = meaning.definitions[k].definition;
+                            let match = definition === comparisonDefinition;
+    
+                            if (match) {
+                                console.log(suffixesUsedThisGame);
+
+                                if (suffixesUsedThisGame.includes(suffix)) {
+                                    rejectReason = `-${suffix} suffix already played!`
+                                    return true;
+                                }
+
+                                suffixesUsedThisGame.push(suffix);
+                                console.log(suffixesUsedThisGame);
+                                return false;
+                            }
+                        }
+    
+                    }
+                }
+            }
+            return false;
+        }
+    }
+    return false;
 }
 
 //#endregion
