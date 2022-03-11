@@ -585,7 +585,7 @@ function setGameOver() {
 // add player 1 word to player 1 scorecard
 function player1Submit() {
     let player1Submit = document.createElement('li');
-    player1Submit.textContent = selectedPromptText + playerInput.value;
+    player1Submit.textContent = selectedPromptText + playerInput.value + ' - ' + getScoreForCurrentWord();
     player1Submit.className = "player-1-submit";
     player1Score.appendChild(player1Submit);
 }
@@ -593,7 +593,7 @@ function player1Submit() {
 // add player 2 word to player 2 scorecard
 function player2Submit() {
     let player2Submit = document.createElement('li');
-    player2Submit.textContent = selectedPromptText + playerInput.value;
+    player2Submit.textContent = selectedPromptText + playerInput.value + ' - ' + getScoreForCurrentWord();
     player2Submit.className = "player-2-submit";
     player2Score.appendChild(player2Submit);   
 }
