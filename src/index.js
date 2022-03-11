@@ -297,7 +297,8 @@ function selectPromptLetters(i = 0) {
     selectedPromptText = availablePromptText.slice(i);
     highlightPromptStartingAt(i);
     playerInput.focus();
-    setPopupVisibleTo(false);
+    console.log(popup.dataset.type);
+    popup.dataset.type === 'controls' ? setPopupVisibleTo(false) : null;
 }
 
 // highlight selected portion of prompt, dim unused portion
