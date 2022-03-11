@@ -586,6 +586,7 @@ function resetGame() {
         setPromptTo(word);
         frankenword.textContent = word;
         wordsPlayedThisGame.length = 0;
+        suffixesUsedThisGame.length = 0;
         isVoiceActive ? readFrankenword() : null;
         playerInput.removeAttribute('placeholder');
         resizeInput();
