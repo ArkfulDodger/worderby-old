@@ -1,3 +1,6 @@
+# DEV NOTE
+This repo contains the original code of this game as a web-based app, created for a school project. The current iteration of this game for mobile is in a separate repo
+
 # worderby
 worderby is a competitive word game where players take turns finding words whose first letter(s) match the final letter(s) of the previously played word. Players earn points for each letter in their word, letters utilized from the previous word scoring more points than new letters added.
 
